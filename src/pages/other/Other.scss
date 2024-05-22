@@ -1,0 +1,11 @@
+@use "src/scss" as *;
+
+.other {
+
+  .content {
+
+    &__title span {
+      color: $main-color;
+    }
+  }
+}

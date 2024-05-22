@@ -1,0 +1,280 @@
+@use 'src/scss' as *;
+
+.home {
+
+  .content {
+
+    &__filter {
+      &:hover .icon {
+        background: #F7F9FD;
+      }
+
+      .icon {
+        font-size: 18px;
+        padding: 13px 12px 12px 12px;
+        border-radius: 50%;
+        color: $txt-color;
+        transition: background-color 0.3s ease;
+      }
+    }
+
+    .boxes {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 1rem;
+
+      @include breakpoint-down(1600px) {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      @include breakpoint-down(800px) {
+        grid-template-columns: 1fr 1fr;
+      }
+      @include breakpoint-down(550px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &__diver {
+      position: relative;
+      min-height: 140px;
+      display: flex;
+      flex-flow: column;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      box-shadow: rgba(0, 0, 0, 0.15) 0 5px 25px -10px;
+
+      @include breakpoint-down(800px) {
+        min-height: 100px;
+      }
+
+      &:nth-child(1) {
+        box-shadow: #EC505C70 0 5px 25px -10px;
+      }
+      &:nth-child(2) {
+        box-shadow: #45cfc370 0 5px 25px -10px;
+      }
+      &:nth-child(3) {
+        box-shadow: #e745a670 0 5px 25px -10px;
+      }
+      &:nth-child(4) {
+        box-shadow: #fdd57c70 0 5px 25px -10px;
+      }
+      &:nth-child(5) {
+        box-shadow: #717ce070 0 5px 25px -10px;
+      }
+      &:nth-child(6) {
+        box-shadow: #77d58570 0 5px 25px -10px;
+      }
+
+      .icons {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+
+        i {
+          font-size: 28px;
+
+          @include tablet {
+            font-size: 24px;
+          }
+
+          &.fa-users-viewfinder {
+            color: #ec505c;
+          }
+          &.fa-chart-line {
+            color: #45cfc3;
+          }
+          &.fa-money-bill-trend-up {
+            color: #e745a6;
+          }
+          &.fa-money-bill-transfer {
+            color: #fdd57c;
+          }
+          &.fa-file-invoice-dollar {
+            color: #717ce0;
+          }
+          &.fa-sack-dollar {
+            color: #77d585;
+          }
+        }
+      }
+    }
+
+    &__txt {
+      display: block;
+      font-weight: 500;
+      margin-right: 2.6rem;
+      opacity: 0.8;
+    }
+    &__num {
+      font-weight: 500;
+      font-size: 17px;
+      color: $main-color;
+
+      &.num {
+        font-weight: 600;
+        color: #AD1FEA;
+      }
+    }
+
+    .calendar {
+      position: absolute;
+      bottom: 0;
+      right: 7%;
+      visibility: hidden;
+
+      @include breakpoint-down(650px) {
+        bottom: -160px;
+        right: 10%;
+      }
+      @include mobile {
+        bottom: -200px;
+      }
+      @include breakpoint-down(400px) {
+        right: -5%;
+      }
+
+      .row {
+        gap: 10px;
+
+        @include breakpoint-down(650px) {
+          flex-flow: column;
+        }
+      }
+
+      &__content {
+        position: relative;
+        border-radius: 12px;
+        background: #fff;
+        z-index: 12;
+
+        .txt {
+          display: block;
+          font-weight: 500;
+          text-align: center;
+          padding: 5px 0;
+        }
+
+        .btn {
+          position: absolute;
+          right: 0;
+          bottom: -13%;
+          padding: 8px 1rem;
+          border-radius: 12px;
+          color: #fff;
+          background: $main-color;
+          transition: opacity 0.3s ease;
+
+          &:hover {
+            opacity: 0.7;
+          }
+        }
+      }
+
+      &.open {
+        visibility: visible;
+      }
+      &.close {
+        visibility: hidden;
+      }
+
+      .bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #00000050;
+        z-index: 11;
+      }
+    }
+    .react-calendar {
+      position: relative;
+      width: 280px;
+      max-width: 100%;
+      font-family: $font-family;
+      padding-bottom: 10px;
+      background-color: #fff;
+      color: #222;
+      border-radius: 8px;
+      border-color: #eff0f6;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      line-height: 1.125em;
+
+      @include mobile {
+        width: 250px;
+      }
+    }
+    .react-calendar__navigation button {
+      color: #6f48eb;
+      min-width: 44px;
+      background: none;
+      font-size: 16px;
+      margin-top: 8px;
+    }
+    .react-calendar__navigation button:enabled:hover,
+    .react-calendar__navigation button:enabled:focus {
+      background-color: #f8f8fa;
+    }
+    .react-calendar__navigation button[disabled] {
+      background-color: #f0f0f0;
+    }
+    abbr[title] {
+      text-decoration: none;
+    }
+    .react-calendar__tile:enabled:hover,
+    .react-calendar__tile:enabled:focus {
+      background: #f8f8fa;
+      color: #6f48eb;
+      border-radius: 6px;
+    }
+    .react-calendar__tile--now {
+      background: #6f48eb33;
+      border-radius: 6px;
+      font-weight: bold;
+      color: #6f48eb;
+    }
+    .react-calendar__tile--now:enabled:hover,
+    .react-calendar__tile--now:enabled:focus {
+      background: #6f48eb33;
+      border-radius: 6px;
+      font-weight: bold;
+      color: #6f48eb;
+    }
+    .react-calendar__tile--hasActive:enabled:hover,
+    .react-calendar__tile--hasActive:enabled:focus {
+      background: #f8f8fa;
+    }
+    .react-calendar__tile--active {
+      background: #6f48eb;
+      border-radius: 6px;
+      font-weight: bold;
+      color: white;
+    }
+    .react-calendar__tile--active:enabled:hover,
+    .react-calendar__tile--active:enabled:focus {
+      background: #6f48eb;
+      color: white;
+    }
+    .react-calendar--selectRange .react-calendar__tile--hover {
+      background-color: #f8f8fa;
+    }
+    .react-calendar__tile--range {
+      background: #f8f8fa;
+      color: #6f48eb;
+      border-radius: 0;
+    }
+    .react-calendar__tile--rangeStart {
+      border-radius: 6px 0 0 6px;
+      background: #6f48eb;
+      color: white;
+    }
+    .react-calendar__tile--rangeEnd {
+      border-radius: 0 6px 6px 0;
+      background: #6f48eb;
+      color: white;
+    }
+  }
+}

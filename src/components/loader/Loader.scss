@@ -1,0 +1,80 @@
+@use "src/scss" as *;
+
+.loader {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--body-bg);
+  z-index: 100000;
+
+  .loader-full {
+    width: 48px;
+    height: 48px;
+    display: inline-block;
+    position: relative;
+
+    &::before, &::after {
+      content: '';
+      box-sizing: border-box;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid #000;
+      position: absolute;
+      left: 0;
+      top: 0;
+      animation: animloader 2s linear infinite;
+    }
+    &::after {
+      animation-delay: 1s;
+    }
+
+    @keyframes animloader {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+  }
+}
+
+
+.loader-content {
+  position: relative;
+  top: -100%;
+  width: 100%;
+  height: calc(95vh - $header-height + 50px);
+  display: block;
+  margin: auto;
+  background: var(--body-bg);
+
+  &::after {
+    position: absolute;
+    top: 80%;
+    left: 5rem;
+    transform: translateY(-50%);
+    width: calc(100% - 10rem);
+    height: calc(100% - 1rem);
+    content: '';
+    background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5) 50%, transparent 100%),
+    linear-gradient(#DDD 100px, transparent 0),
+    linear-gradient(#DDD 16px, transparent 0),
+    linear-gradient(#DDD 100px, transparent 0),
+    linear-gradient(#DDD 100px, transparent 0);
+    background-repeat: no-repeat;
+    background-size: 75px 125px, 100% 120px, 100% 520px, 100% 120px;
+    background-position: -185px 0, center 0, center 115px, center 142px;
+    animation: animloader 1.2s linear infinite;
+  }
+
+  @keyframes animloader {
+    to {
+      background-position: 100% 0, center 0, center 115px, center 142px;
+    }
+  }
+}

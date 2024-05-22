@@ -1,0 +1,150 @@
+@use "./scss" as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+body {
+  font-family: $font-family;
+  color: $txt-color;
+  background: $bg-color;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 5px;
+  background-color: #e1e1e1;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: #a1a1a1;
+
+  &:hover {
+    background: #8f8f8f;
+  }
+}
+
+.page {
+  min-height: 100vh;
+  padding: 25px 0;
+  margin-left: calc(250px + 1rem);
+
+  @include tablet {
+    margin-left: calc(60px + 1rem);
+  }
+  @include mobile {
+    margin-left: calc(40px + 1rem);
+  }
+
+  .container {
+    padding-inline: 0 1rem;
+  }
+
+  .content {
+    padding: 24px 24px;
+    border-radius: 20px;
+    background: #fff;
+
+    @include mobile {
+      padding: 1rem;
+    }
+
+    &__titles {
+      margin-bottom: 1.5rem;
+    }
+    &__title {
+      font-size: 20px;
+    }
+  }
+}
+
+.ant-table {
+  &-cell:nth-child(2) {
+    font-weight: 600;
+  }
+  &-cell:last-child {
+    text-align: center !important;
+  }
+
+  .ant-tag {
+    font-weight: 500;
+    padding: 0 10px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    &__btn {
+      width: 33px;
+      height: 33px;
+      padding: 5px;
+      border-radius: 10px;
+      background: #979da920;
+      transition: opacity 0.3s ease;
+
+      &.view {
+        background: #3e97ff20;
+
+        i {
+          color: #3e97ff;
+        }
+      }
+      &.edit {
+        background: #ffb62c20;
+
+        i {
+          color: #ffb62c;
+        }
+      }
+      &.delete {
+        background: #ed2b4620;
+
+        i {
+          color: #ed2b46;
+        }
+      }
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      i {
+        color: #979da9;
+      }
+    }
+  }
+}
+
+.ant-pagination {
+  margin-bottom: 0 !important;
+}
+
+.ant-modal {
+  margin-right: 1rem;
+
+  &-title {
+    font-weight: 600 !important;
+    font-size: 22px !important;
+    margin-bottom: 1rem !important;
+  }
+
+  &-body {
+    margin-bottom: 1rem !important;
+  }
+
+  .ant-form {
+
+    &-item {
+      margin-bottom: 10px;
+
+      &.age {
+        flex: 1;
+      }
+
+      &-required {
+        font-weight: 500;
+      }
+    }
+  }
+}

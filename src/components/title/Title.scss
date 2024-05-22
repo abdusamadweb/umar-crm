@@ -1,0 +1,47 @@
+@use 'src/scss' as *;
+
+
+.titles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #CBD5E1;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 1rem;
+    border-radius: 12px;
+    color: #fff;
+    background: $main-color;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  .additional-btn {
+    padding: 10px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 5px 20px 0 #66666660;
+
+    i {
+      color: $main-color;
+    }
+  }
+}
+
+.page-title {
+  min-height: 55px;
+  display: flex;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #CBD5E1;
+}

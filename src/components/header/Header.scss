@@ -1,0 +1,157 @@
+@use '/src/scss' as *;
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  padding: 30px 0;
+  border-radius: 0 20px 20px 0;
+  border: 1px solid #eff0f6;
+  background: #fff;
+  z-index: 6;
+  transition: all 0.2s ease;
+
+  &.open {
+    width: 250px;
+  }
+
+  @include tablet {
+    position: fixed;
+    width: 60px;
+    z-index: 10;
+  }
+  @include mobile {
+    width: 40px;
+  }
+
+  .container {
+    padding-inline: 1rem;
+  }
+
+  &__logos {
+    width: 100%;
+    min-height: 30px;
+    margin-bottom: 25px;
+  }
+  &__logo {
+    font-size: 24px;
+    letter-spacing: -1px;
+    margin: 0;
+    color: $txt-color;
+    transition: font-size 0.2s ease;
+
+    &.opa {
+      font-size: 24px;
+      visibility: visible;
+    }
+
+    @include tablet {
+      font-size: 1px;
+      visibility: hidden;
+    }
+  }
+
+  .burger-menu {
+    position: absolute;
+    top: 3%;
+    left: 15px;
+    display: none;
+
+    @include tablet {
+      display: block;
+    }
+    @include mobile {
+      top: 2%;
+      left: 8px;
+    }
+
+    .icon {
+      font-size: 28px;
+      color: $txt-color;
+      transition: left 0.3s ease;
+
+      @include mobile {
+        font-size: 20px;
+      }
+
+      &.fa-xmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 30px;
+
+        @include mobile {
+          font-size: 28px;
+        }
+      }
+
+      &.left {
+        top: 4px;
+        left: 190px;
+      }
+    }
+
+    .circle {
+      position: absolute;
+      top: 0;
+      right: -4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #FF0000;
+      z-index: 2;
+    }
+  }
+
+  .nav {
+    position: relative;
+
+    @include tablet {
+      visibility: hidden;
+    }
+
+    &__list {
+      display: flex;
+      flex-flow: column;
+      gap: 8px;
+    }
+    &__link {
+      width: 100%;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 10px;
+      color: $txt-color;
+      transition: color 0.3s ease, background-color 0.3s ease;
+
+      &:hover {
+        background: #f7f9fd;
+      }
+      &:hover .icon {
+        transform: translateX(8px);
+      }
+
+      &:focus {
+        color: $main-color;
+      }
+
+      &.active {
+        color: $main-color;
+        background: #f2f4ff;
+      }
+
+      .icon {
+        font-size: 14px;
+        transition: transform 0.5s ease;
+      }
+    }
+  }
+
+  .close {
+    visibility: hidden;
+  }
+  .open {
+    visibility: visible;
+  }
+}
