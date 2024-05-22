@@ -137,4 +137,4 @@ const Other = () => {
     );
 };
 
-export default Other;
+export default Other
