@@ -1,10 +1,10 @@
-import './Other.scss'
+import './Price.scss'
 import React, {useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Form, Input, Modal, Popconfirm, Table} from "antd";
+import {Form, Input, Modal, Popconfirm, Table, Tooltip} from "antd";
 import {formatPrice} from "../../assets/scripts/global.js";
 
-const Other = () => {
+const Price = () => {
 
     const [modal, setModal] = useState('close')
 
@@ -80,16 +80,34 @@ const Other = () => {
 
 
     return (
-        <div className="other page">
+        <div className="price page">
             <div className="container">
                 <Title
-                    title='Бошка харажатлар'
+                    title='Пул менежменти'
                     btn='Кошиш'
                     click={() => setModal('add')}
                     icon={true}
+                    additional={
+                        <Tooltip title='Калькулятор'>
+                            <button className='additional-btn' onClick={() => setModal('calc')}>
+                                <i className="fa-solid fa-calculator"/>
+                            </button>
+                        </Tooltip>
+                    }
                 />
                 <div className="content">
-                    <h3 className="content__title fw600 mb2">Хаммаси болиб: <span>{ formatPrice(170000) }</span> сум</h3>
+                    <h3 className="content__title fw600 mb2">
+                        Хаммаси болиб: <span>{formatPrice(170000)}</span> сум
+                        <div className='grid align-center'>
+                            <span/>
+                            <i className="fa-solid fa-plus"/>
+                            <i className="fa-solid fa-equals"/>
+                            <div>
+                                <span className='red'>{formatPrice(370000)}</span> сум
+                            </div>
+                        </div>
+                        Бошка харажатлар: <span>{formatPrice(200000)}</span> сум
+                    </h3>
                     <Table columns={columns} dataSource={data} />
                 </div>
             </div>
@@ -137,4 +155,4 @@ const Other = () => {
     );
 };
 
-export default Other
+export default Price;

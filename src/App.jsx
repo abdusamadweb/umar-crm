@@ -15,6 +15,7 @@ import {antdConfig} from "./config/antd/antdConfig.js";
 import Works from "./pages/works/Works.jsx";
 import Archive from "./pages/works/Archive.jsx";
 import Other from "./pages/other/Other.jsx";
+import Price from "./pages/price/Price.jsx";
 
 
 const Wrapper = ({ children }) => {
@@ -43,6 +44,7 @@ const App = () => {
                             <Route path='/works' element={<Works />} />
                             <Route path='/works/archive' element={<Archive />} />
                             <Route path='/workers' element={<Workers />} />
+                            <Route path='/money-manage' element={<Price />} />
                             <Route path='/other' element={<Other />} />
 
                             {/* 404 */}
