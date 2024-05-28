@@ -8,7 +8,9 @@ const $api = axios.create({
     headers: {
         "Content-Type": "application/json",
         Authorization: TOKEN,
-    }
+
+    },
+    redirect: 'follow',
 })
 
 export default $api

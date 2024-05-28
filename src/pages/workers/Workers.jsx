@@ -188,7 +188,7 @@ const Workers = () => {
                 <div className="workers__inner">
                     <Title
                         title='Ходимлар'
-                        btn='Кошишs'
+                        btn='Кошиш'
                         click={() => setModal('add')}
                         icon={true}
                     />
@@ -255,12 +255,11 @@ const Workers = () => {
                         name='salary'
                         label="Маоши"
                     >
-                        <Input placeholder='Маоши' type='number' />
+                        <Input placeholder='Маоши' type='number' suffix={'сум'} />
                     </Form.Item>
                     <Form.Item
                         name='address'
                         label="Турар жойи"
-                            rules={[{ required: true }]}
                     >
                         <Input.TextArea placeholder='Турар жойи' />
                     </Form.Item>
