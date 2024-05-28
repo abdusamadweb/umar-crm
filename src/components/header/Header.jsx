@@ -1,15 +1,18 @@
 import './Header.scss'
 import React, {useState} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useHref} from "react-router-dom";
 import NavBar from "./NavBar.jsx";
+import {protectedRoutes} from "../../routes/route.jsx";
 
 const Header = () => {
+
+    const href = useHref()
 
     const [openMenu, setOpenMenu] = useState(false)
 
 
     return (
-        <div className={`header ${openMenu ? 'open' : ''} `}>
+        <div className={`header ${openMenu ? 'open' : ''} `} style={{display: protectedRoutes.some(route => href === route.path) && 'block'}}>
             <div className="container">
                 <div className="header__inner">
                     <Link className='header__logos' to='/'>

@@ -1,11 +1,13 @@
 import axios from 'axios'
 
-export const API_TEST = 'https://###/'
+export const API = 'https://api.choynak.org/api/0d4b4bc1e0f44ea1ad26c81bd7edf437'
+export const TOKEN = 'Bearer 7nuimEOYjVeFI539YcdNlCbKGcKolrOecEFZ29id'
 
 const $api = axios.create({
-    baseURL: API_TEST,
+    baseURL: API,
     headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: TOKEN,
     }
 })
 

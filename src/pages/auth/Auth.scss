@@ -1,0 +1,19 @@
+@use "src/scss" as *;
+
+.login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+
+  &__inner {
+    width: 500px;
+  }
+
+  .ant-form {
+
+    .ant-form-item-required {
+      font-weight: 600 !important;
+      font-size: 16px !important;
+    }
+  }
+}

@@ -3,19 +3,13 @@ import './assets/styles/normalize.css'
 import './assets/styles/global.css'
 import './App.scss'
 
-import {BrowserRouter, Route, Routes, useLocation} from "react-router-dom"
+import {BrowserRouter, useLocation} from "react-router-dom"
 import {useLayoutEffect} from "react"
 import Header from "./components/header/Header"
-import Home from "./pages/home/Home"
 import {Toaster} from "react-hot-toast"
-import Page404 from "./components/404/Page404.jsx";
-import Workers from "./pages/workers/Workers.jsx";
 import {ConfigProvider} from "antd";
 import {antdConfig} from "./config/antd/antdConfig.js";
-import Works from "./pages/works/Works.jsx";
-import Archive from "./pages/works/Archive.jsx";
-import Other from "./pages/other/Other.jsx";
-import Price from "./pages/price/Price.jsx";
+import {routes} from "./routes/route.jsx";
 
 
 const Wrapper = ({ children }) => {
@@ -38,19 +32,7 @@ const App = () => {
 
                         <Header />
 
-                        <Routes>
-
-                            <Route path='/' element={<Home />} />
-                            <Route path='/works' element={<Works />} />
-                            <Route path='/works/archive' element={<Archive />} />
-                            <Route path='/workers' element={<Workers />} />
-                            <Route path='/money-manage' element={<Price />} />
-                            <Route path='/other' element={<Other />} />
-
-                            {/* 404 */}
-                            <Route path='/*' element={<Page404 />}/>
-
-                        </Routes>
+                        { routes }
 
                     </ConfigProvider>
 

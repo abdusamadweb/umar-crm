@@ -3,14 +3,33 @@ import React, {useState} from 'react';
 import Title from "../../components/title/Title.jsx";
 import {Form, Input, InputNumber, Modal, Popconfirm, Table, Tag} from "antd";
 import {formatPhone, formatPrice} from "../../assets/scripts/global.js";
+import $api from "../../api/apiConfig.js";
+import {useQuery} from "react-query";
 
 const Workers = () => {
 
     const [modal, setModal] = useState('close')
 
 
-    const deleteWorker = (id) => {
+    // fetch data
+    const fetchData = async () => {
+        const { data } = await $api.get('/workers')
+        return data
+    }
+    const { data, refetch } = useQuery(
+        ['workers'],
+        fetchData,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
+    console.log(data)
 
+
+    const deleteItem = (id) => {
+
+        refetch()
     }
 
 
@@ -31,9 +50,9 @@ const Workers = () => {
         },
         {
             title: 'Телефон',
-            dataIndex: 'phoneNumber',
-            key: 'phoneNumber',
-            render: (_, { phoneNumber }) => <span>{ formatPhone(phoneNumber) || '_' }</span>,
+            dataIndex: 'phone',
+            key: 'phone',
+            render: (_, { phone }) => <span>{ formatPhone(phone) || '_' }</span>,
         },
         {
             title: 'Йоши',
@@ -42,31 +61,29 @@ const Workers = () => {
         },
         {
             title: 'Лавозими',
-            key: 'tags',
-            dataIndex: 'tags',
-            render: (_, { tags }) => (
-                tags.map((tag) => {
-                    let color = 'geekblue'
-                    if (tag === 'абшивка') {
-                        color = 'volcano'
-                    } else if (tag === 'каркас' || tag === 'карказ') {
-                        color = 'green'
-                    } else if (tag === 'тикув' || tag === 'тикувчи') {
-                        color = 'yellow'
-                    }
-                    return (
-                        <Tag color={color} key={tag}>
-                            { tag.toUpperCase() || '_' }
-                        </Tag>
-                    )
-                })
-            ),
+            key: 'position',
+            dataIndex: 'position',
+            render: (_, { position }) => {
+                let color = 'geekblue'
+                if (position === 'абшивка') {
+                    color = 'volcano'
+                } else if (position === 'каркас' || position === 'карказ') {
+                    color = 'green'
+                } else if (position === 'тикув' || position === 'тикувчи') {
+                    color = 'yellow'
+                }
+                return (
+                    <Tag color={color} key={position}>
+                        { position?.toUpperCase() || '_' }
+                    </Tag>
+                )
+            },
         },
         {
             title: 'Маоши',
             dataIndex: 'salary',
             key: 'salary',
-            render: (_, { salary }) => <span>{ salary ? formatPrice(salary) : 'ишбай' }</span>,
+            render: (_, { salary }) => <span>{ salary ? `${formatPrice(salary)} сум` : 'ишбай' }</span>,
         },
         {
             title: 'Турар жойи',
@@ -86,7 +103,7 @@ const Workers = () => {
                         description=' '
                         okText="Ха"
                         cancelText="Йок"
-                        onConfirm={() => deleteWorker(id)}
+                        onConfirm={() => deleteItem(id)}
                     >
                         <button className='actions__btn delete'>
                             <i className="fa-regular fa-trash-can"/>
@@ -94,31 +111,6 @@ const Workers = () => {
                     </Popconfirm>
                 </div>
             ),
-        },
-    ]
-
-    const data = [
-        {
-            key: '1',
-            name: 'Анвар',
-            age: 32,
-            address: 'Хасанбой',
-            tags: ['абшивка'],
-            phoneNumber: '+998330012223'
-        },
-        {
-            key: '2',
-            name: 'Бахтийор',
-            age: 42,
-            address: 'Юнусобод',
-            tags: ['карказ'],
-        },
-        {
-            key: '3',
-            name: 'Дилорам Барнаева',
-            age: 32,
-            address: 'Чорсу',
-            tags: ['тикувчи'],
         },
     ]
 
@@ -190,6 +182,17 @@ const Workers = () => {
                         </Form.Item>
                     </div>
                     <Form.Item
+                        name='phone'
+                        label="Телефон"
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <Input placeholder='Телефон' type='tel' defaultValue='+998' />
+                    </Form.Item>
+                    <Form.Item
                         name='job'
                         label="Сохаси"
                         rules={[
@@ -199,6 +202,12 @@ const Workers = () => {
                         ]}
                     >
                         <Input placeholder='Сохаси' />
+                    </Form.Item>
+                    <Form.Item
+                        name='salary'
+                        label="Маоши"
+                    >
+                        <Input placeholder='Маоши' />
                     </Form.Item>
                     <Form.Item
                         name='address'
