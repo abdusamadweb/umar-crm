@@ -1,14 +1,20 @@
 import './Workers.scss'
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Form, Input, InputNumber, Modal, Popconfirm, Table, Tag} from "antd";
+import {Button, Form, Input, InputNumber, Modal, Popconfirm, Select, Table, Tag} from "antd";
 import {formatPhone, formatPrice} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
-import {useQuery} from "react-query";
+import {useMutation, useQuery} from "react-query";
+import {addOrEdit, deleteData, fetchCategory} from "../../api/request.js";
+
+const { Option } = Select
 
 const Workers = () => {
 
+    const [form] = Form.useForm()
+
     const [modal, setModal] = useState('close')
+    const [selectedItem, setSelectedItem] = useState(null)
 
 
     // fetch data
@@ -24,13 +30,54 @@ const Workers = () => {
             refetchOnWindowFocus: false
         }
     )
-    console.log(data)
 
 
-    const deleteItem = (id) => {
+    // fetch category
+    const { data: category } = useQuery(
+        ['category'],
+        fetchCategory,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
 
-        refetch()
+
+    // add & edit
+    const { mutate } = useMutation({
+        mutationFn: (values) => {
+            console.log(values, 'fn')
+
+            return addOrEdit('workers', values, selectedItem?.id || false);
+        },
+        onSuccess: async (res) => {
+            console.log(res, 'success')
+            setModal('close')
+        },
+        onError: async (err) => {
+            console.log(err, 'error')
+        }
+    })
+
+    const onFormSubmit = (values) => {
+        mutate(values)
+        setSelectedItem(null)
     }
+
+
+    // delete
+    const { mutate: deleteItem } = useMutation({
+        mutationFn: (id) => {
+
+            return deleteData('workers', id)
+        },
+        onSuccess: async (res) => {
+            console.log(res, 'success')
+        },
+        onError: async (err) => {
+            console.log(err, 'error')
+        }
+    })
 
 
     // table
@@ -61,20 +108,20 @@ const Workers = () => {
         },
         {
             title: 'Лавозими',
-            key: 'position',
-            dataIndex: 'position',
-            render: (_, { position }) => {
-                let color = 'geekblue'
-                if (position === 'абшивка') {
+            key: 'category',
+            dataIndex: 'category',
+            render: (_, { category }) => {
+                let color = 'purple'
+                if (category?.name === 'Абшивка') {
                     color = 'volcano'
-                } else if (position === 'каркас' || position === 'карказ') {
+                } else if (category?.name === 'Карказ') {
                     color = 'green'
-                } else if (position === 'тикув' || position === 'тикувчи') {
-                    color = 'yellow'
+                } else if (category?.name === 'Тикувчи') {
+                    color = 'gold'
                 }
                 return (
-                    <Tag color={color} key={position}>
-                        { position?.toUpperCase() || '_' }
+                    <Tag color={color} key={category?.name}>
+                        { category?.name?.toUpperCase() || '_' }
                     </Tag>
                 )
             },
@@ -93,9 +140,12 @@ const Workers = () => {
         {
             title: 'Амаллар',
             key: 'actions',
-            render: (_, { id }) => (
+            render: (_, item) => (
                 <div className="actions">
-                    <button className='actions__btn edit' onClick={() => setModal('edit')}>
+                    <button className='actions__btn edit' onClick={() => {
+                        setModal('edit')
+                        setSelectedItem(item)
+                    }}>
                         <i className="fa-regular fa-pen-to-square"/>
                     </button>
                     <Popconfirm
@@ -103,7 +153,7 @@ const Workers = () => {
                         description=' '
                         okText="Ха"
                         cancelText="Йок"
-                        onConfirm={() => deleteItem(id)}
+                        onConfirm={() => deleteItem(item?.id)}
                     >
                         <button className='actions__btn delete'>
                             <i className="fa-regular fa-trash-can"/>
@@ -120,9 +170,16 @@ const Workers = () => {
         required: '${label} толдирилиши шарт!',
     }
 
-    const onFormSubmit = (values) => {
-        console.log(values);
-    }
+    useEffect(() => {
+        if (selectedItem) {
+            form.setFieldsValue({
+                ...selectedItem,
+                category: selectedItem.category?.name,
+            })
+        } else {
+            form.resetFields()
+        }
+    }, [form, selectedItem])
 
 
     return (
@@ -131,7 +188,7 @@ const Workers = () => {
                 <div className="workers__inner">
                     <Title
                         title='Ходимлар'
-                        btn='Кошиш'
+                        btn='Кошишs'
                         click={() => setModal('add')}
                         icon={true}
                     />
@@ -146,37 +203,30 @@ const Workers = () => {
                     top: 20,
                 }}
                 open={modal !== 'close'}
-                onOk={() => setModal('close')}
-                onCancel={() => setModal('close')}
-                okText='Тасдиклаш'
-                cancelText='Бекор килиш'
+                onCancel={() => {
+                    setModal('close')
+                    setSelectedItem(null)
+                }}
             >
                 <Form
                     onFinish={onFormSubmit}
                     layout='vertical'
                     validateMessages={validateMessages}
+                    form={form}
                 >
                     <div className='d-flex between align-center g1'>
                         <Form.Item
                             className='age'
                             name='name'
                             label="Ф.И.О"
-                            rules={[
-                                {
-                                    required: true,
-                                },
-                            ]}
+                            rules={[{ required: true }]}
                         >
                             <Input placeholder='Исм шариф' />
                         </Form.Item>
                         <Form.Item
                             name='age'
                             label="Йоши"
-                            rules={[
-                                {
-                                    required: true,
-                                },
-                            ]}
+                            rules={[{ required: true }]}
                         >
                             <InputNumber placeholder='Йоши' type='number' max={99} min={0} />
                         </Form.Item>
@@ -184,42 +234,41 @@ const Workers = () => {
                     <Form.Item
                         name='phone'
                         label="Телефон"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                            rules={[{ required: true }]}
                     >
                         <Input placeholder='Телефон' type='tel' defaultValue='+998' />
                     </Form.Item>
                     <Form.Item
-                        name='job'
+                        name="category"
                         label="Сохаси"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                        rules={[{ required: true }]}
                     >
-                        <Input placeholder='Сохаси' />
+                        <Select size="large" placeholder="Танланг">
+                            {category?.map(i => (
+                                <Option key={i?.id} value={i?.name}>
+                                    {i?.name}
+                                </Option>
+                            ))}
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         name='salary'
                         label="Маоши"
                     >
-                        <Input placeholder='Маоши' />
+                        <Input placeholder='Маоши' type='number' />
                     </Form.Item>
                     <Form.Item
                         name='address'
                         label="Турар жойи"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                            rules={[{ required: true }]}
                     >
                         <Input.TextArea placeholder='Турар жойи' />
                     </Form.Item>
+                    <div className='end mt1'>
+                        <Button type="primary" htmlType="submit" size='large'>
+                            Тасдиклаш
+                        </Button>
+                    </div>
                 </Form>
             </Modal>
         </div>

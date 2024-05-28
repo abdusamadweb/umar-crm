@@ -138,6 +138,12 @@ i {
    text-align: center;
    justify-content: center;
 }
+.start {
+   text-align: start;
+}
+.end {
+   text-align: end;
+}
 .between {
    justify-content: space-between;
 }

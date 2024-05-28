@@ -149,3 +149,11 @@ body {
     }
   }
 }
+
+.ant-select {
+
+  &-item-option-content {
+    font-weight: 500;
+    font-size: 16px;
+  }
+}

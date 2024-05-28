@@ -157,11 +157,7 @@ const Works = () => {
                     <Form.Item
                         name='worker'
                         label="Ходим"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                        rules={[{ required: true }]}
                     >
                         <Select
                             size='large'
@@ -182,22 +178,14 @@ const Works = () => {
                     <Form.Item
                         name='job'
                         label="Иш хаки"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                        rules={[{ required: true }]}
                     >
                         <Input placeholder='Иш хаки' type='number' />
                     </Form.Item>
                     <Form.Item
                         name='partner'
                         label="Докон"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                        rules={[{ required: true }]}
                     >
                         <Input placeholder='Докон' />
                     </Form.Item>

@@ -1,4 +1,12 @@
 @use "src/scss" as *;
 
 .workers {
+
+}
+
+.ant-modal {
+
+  &-footer {
+    display: none !important;
+  }
 }
