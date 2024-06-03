@@ -1,15 +1,183 @@
 import './Works.scss'
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Form, Input, InputNumber, Modal, Popconfirm, Segmented, Select, Table, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Segmented, Select, Table, Tooltip} from "antd";
 import {formatPrice} from "../../assets/scripts/global.js";
 import {Link} from "react-router-dom";
+import $api from "../../api/apiConfig.js";
+import {useMutation, useQuery} from "react-query";
+import {addOrEdit, deleteData, fetchCategory} from "../../api/request.js";
+import toast from "react-hot-toast";
 
 const Works = () => {
 
-    const [modal, setModal] = useState('close')
+    const [form] = Form.useForm()
 
-    const [value, setValue] = useState('Абшивка')
+    const [modal, setModal] = useState('close')
+    const [loading, setLoading] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
+
+    const [value, setValue] = useState(localStorage.getItem('work') || 'Абшивка')
+
+    const changeWork = (val) => {
+        setValue(val)
+        localStorage.setItem('work', val)
+    }
+
+
+    // fetch data
+    const fetchData = async () => {
+        const { data } = await $api.get(`/works?whereRelation[category][name]=${value}`)
+        return data
+    }
+    const { data, refetch } = useQuery(
+        ['works', value],
+        fetchData,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
+
+
+    // fetch workers
+    const fetchWorkers = async () => {
+        const { data } = await $api.get('/workers')
+        return data
+    }
+    const { data: workers } = useQuery(
+        ['workers'],
+        fetchWorkers,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
+
+
+    // fetch category
+    const { data: category } = useQuery(
+        ['category'],
+        fetchCategory,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
+
+
+    // add & edit
+    const { mutate } = useMutation({
+        mutationFn: (values) => {
+            setLoading(true)
+            return addOrEdit(
+                'works',
+                { ...values, createdAt: selectedItem ? selectedItem.createdAt : new Date() },
+                selectedItem?.id || false
+            )
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Кошилди!')
+
+            setModal('close')
+            setSelectedItem(null)
+            setLoading(false)
+            form.resetFields()
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+            setLoading(false)
+        }
+    })
+
+    const onFormSubmit = (values) => {
+        mutate(values)
+    }
+
+
+    // delete
+    const { mutate: deleteItem } = useMutation({
+        mutationFn: (id) => {
+            return deleteData('workers', id)
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Очирилди!')
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+        }
+    })
+
+
+    // add expense
+    const { mutate: addExpense } = useMutation({
+        mutationFn: (values) => {
+            const item = {
+                name: `${values.mebelName} - ${values.worker.name} ${values.category.name}`,
+                description: `${values.worker.name} - ${values.mebelName}ни ${values.category.name}сини килди. ${new Date(values.createdAt).toLocaleDateString()} дан ${new Date().toLocaleDateString()} га кадар тугатилди`,
+                money: values.money,
+                date: new Date(),
+            }
+            return addOrEdit('expenses', item)
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Харажатга кошилди!')
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+        }
+    })
+
+
+    // archive
+    const { mutate: archiveMutate } = useMutation({
+        mutationFn: (values) => {
+            const item = {
+                worker: values.worker.id,
+                category: values.category.id,
+                mebelName: values.mebelName,
+                createdAt: values.createdAt,
+                archivedAt: new Date(),
+                where: values.where,
+                money: values.money,
+            }
+            return addOrEdit('works-archive', item)
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Архивланди!')
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+        }
+    })
+
+    const archiveItem = (values) => {
+        archiveMutate(values)
+        deleteItem(values.id)
+        addExpense(values)
+    }
+
+
+    // form
+    const validateMessages = {
+        required: '${label} толдирилиши шарт!',
+    }
+
+    useEffect(() => {
+        if (selectedItem) {
+            form.setFieldsValue({
+                ...selectedItem,
+                category: selectedItem.category?.id,
+                worker: selectedItem.worker?.id,
+            })
+        } else {
+            form.resetFields()
+        }
+    }, [form, selectedItem])
 
 
     // table
@@ -23,35 +191,46 @@ const Works = () => {
         },
         {
             title: 'Ходим',
-            dataIndex: 'name',
-            key: 'name',
-            render: (_, { name }) => <span>{ name }</span>,
+            dataIndex: 'worker',
+            key: 'worker',
+            render: (_, { worker }) => <span>{ worker.name }</span>,
         },
         {
+            title: 'Мебел номи',
+            dataIndex: 'mebelName',
+            key: 'mebelName',
+            render: (_, { mebelName }) => <span>{ mebelName || '__' }</span>,
+        },
+        {
+            className: 'fw500',
             title: 'Бошланган санаси',
-            dataIndex: 'fromDate',
-            key: 'fromDate',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (_, { createdAt }) => <span>{ new Date(createdAt).toLocaleString() }</span>,
         },
         {
             title: 'Докон',
-            dataIndex: 'partners',
-            key: 'partners'
+            dataIndex: 'where',
+            key: 'where'
         },
         {
             title: 'Иш хаки',
             dataIndex: 'money',
             key: 'money',
-            render: (_, { money }) => <span>{ money ? formatPrice(money) : 'ишбай' }</span>,
+            render: (_, { money }) => <span>{ money ? `${formatPrice(money)} сум` : 'ишбай' }</span>,
         },
         {
             title: 'Амаллар',
             key: 'actions',
-            render: (_, { id }) => (
+            render: (_, item) => (
                 <div className="actions">
                     {/*<button className='actions__btn view' onClick={() => setModal('view')}>*/}
                     {/*    <i className="fa-solid fa-eye"/>*/}
                     {/*</button>*/}
-                    <button className='actions__btn edit' onClick={() => setModal('edit')}>
+                    <button className='actions__btn edit' onClick={() => {
+                        setModal('edit')
+                        setSelectedItem(item)
+                    }}>
                         <i className="fa-regular fa-pen-to-square"/>
                     </button>
                     <Popconfirm
@@ -59,7 +238,7 @@ const Works = () => {
                         description=' '
                         okText="Ха"
                         cancelText="Йок"
-                        // onConfirm={() => deleteWorker(id)}
+                        onConfirm={() => archiveItem(item)}
                     >
                         <Tooltip title="Архивлаш" placement="bottom">
                             <button className='actions__btn'>
@@ -71,41 +250,6 @@ const Works = () => {
             ),
         },
     ]
-
-    const data = [
-        {
-            key: '1',
-            name: 'Анвар',
-            age: 32,
-            address: 'Хасанбой',
-            tags: ['абшивка'],
-            phoneNumber: '+998330012223'
-        },
-        {
-            key: '2',
-            name: 'Бахтийор',
-            age: 42,
-            address: 'Юнусобод',
-            tags: ['карказ'],
-        },
-        {
-            key: '3',
-            name: 'Дилорам Барнаева',
-            age: 32,
-            address: 'Чорсу',
-            tags: ['тикувчи'],
-        },
-    ]
-
-
-    // form
-    const validateMessages = {
-        required: '${label} толдирилиши шарт!',
-    }
-
-    const onFormSubmit = (values) => {
-        console.log(values);
-    }
 
 
     return (
@@ -131,10 +275,13 @@ const Works = () => {
                                 size={'large'}
                                 options={['Абшивка', 'Карказ', 'Тикув']}
                                 value={value}
-                                onChange={setValue}
+                                onChange={changeWork}
                             />
                         </div>
-                        <Table columns={columns} dataSource={data} />
+                        <Table
+                            columns={columns}
+                            dataSource={data}
+                        />
                     </div>
                 </div>
             </div>
@@ -144,51 +291,67 @@ const Works = () => {
                     top: 20,
                 }}
                 open={modal !== 'close'}
-                onOk={() => setModal('close')}
-                onCancel={() => setModal('close')}
-                okText='Тасдиклаш'
-                cancelText='Бекор килиш'
+                onCancel={() => {
+                    setModal('close')
+                    setSelectedItem(null)
+                }}
             >
                 <Form
                     onFinish={onFormSubmit}
                     layout='vertical'
                     validateMessages={validateMessages}
+                    form={form}
                 >
                     <Form.Item
                         name='worker'
                         label="Ходим"
-                        rules={[{ required: true }]}
+                        rules={[{required: true}]}
                     >
-                        <Select
-                            size='large'
-                            defaultValue={'lucy'}
-                            // onChange={handleChange}
-                            options={[
-                                {
-                                    value: 'jack',
-                                    label: 'Jack',
-                                },
-                                {
-                                    value: 'lucy',
-                                    label: 'Lucy',
-                                },
-                            ]}
-                        />
+                        <Select size="large" placeholder="Танланг">
+                            {workers?.map(i => (
+                                <Select.Option key={i?.id} value={i?.id}>
+                                    {i?.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
                     </Form.Item>
                     <Form.Item
-                        name='job'
+                        name='category'
+                        label="Сохаси"
+                        rules={[{required: true}]}
+                    >
+                        <Select size="large" placeholder="Танланг">
+                            {category?.map(i => (
+                                <Select.Option key={i?.id} value={i?.id}>
+                                    {i?.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name='mebelName'
+                        label="Мебел номи"
+                    >
+                        <Input placeholder='Мебел номи'/>
+                    </Form.Item>
+                    <Form.Item
+                        name='money'
                         label="Иш хаки"
-                        rules={[{ required: true }]}
                     >
-                        <Input placeholder='Иш хаки' type='number' />
+                        <Input placeholder='Иш хаки' type='number'/>
                     </Form.Item>
                     <Form.Item
-                        name='partner'
+                        name='where'
                         label="Докон"
-                        rules={[{ required: true }]}
+                        rules={[{required: true}]}
                     >
-                        <Input placeholder='Докон' />
+                        <Input placeholder='Докон'/>
                     </Form.Item>
+                    <div className='end mt1'>
+                        <Button type="primary" htmlType="submit" size='large' loading={loading}>
+                            Тасдиклаш
+                        </Button>
+                    </div>
                 </Form>
             </Modal>
         </div>

@@ -17,14 +17,6 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             link: '/workers'
         },
         {
-            name: 'Ойликлар',
-            link: '/salary'
-        },
-        {
-            name: 'Доконлар',
-            link: '/partners'
-        },
-        {
             name: 'Пул менежменти',
             link: '/money-manage'
         },

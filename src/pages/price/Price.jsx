@@ -1,13 +1,130 @@
 import './Price.scss'
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Form, Input, Modal, Popconfirm, Table, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Table, Tooltip} from "antd";
 import {formatPrice} from "../../assets/scripts/global.js";
-import * as math from 'mathjs'
+import $api from "../../api/apiConfig.js";
+import {useMutation, useQuery} from "react-query";
+import {addOrEdit, deleteData} from "../../api/request.js";
+import toast from "react-hot-toast";
+import Calculator from "../../components/calculator/Calculator.jsx";
 
 const Price = () => {
 
+    const [form] = Form.useForm()
+
     const [modal, setModal] = useState('close')
+    const [loading, setLoading] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
+
+
+    // fetch data
+    const fetchData = async () => {
+        const { data } = await $api.get('expenses')
+        return data
+    }
+    const { data, refetch } = useQuery(
+        ['expenses'],
+        fetchData,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
+
+    // fetch other expenses
+    const fetchOtherExpenses = async () => {
+        const { data } = await $api.get('other-expenses')
+        return data
+    }
+    const { data: otherExpenses } = useQuery(
+        ['other-expenses'],
+        fetchOtherExpenses,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
+
+
+    // add & edit
+    const { mutate } = useMutation({
+        mutationFn: (values) => {
+            setLoading(true)
+            return addOrEdit(
+                'expenses',
+                { ...values, date: selectedItem ? selectedItem.date : new Date() },
+                selectedItem?.id || false
+            )
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Кошилди!')
+
+            setModal('close')
+            setSelectedItem(null)
+            setLoading(false)
+            form.resetFields()
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+            setLoading(false)
+        }
+    })
+
+    const onFormSubmit = (values) => {
+        mutate(values)
+    }
+
+
+    // delete
+    const { mutate: deleteItem } = useMutation({
+        mutationFn: (id) => {
+            return deleteData('other-expenses', id)
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Очирилди!')
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+        }
+    })
+
+
+    // form
+    const validateMessages = {
+        required: '${label} толдирилиши шарт!',
+    }
+
+    useEffect(() => {
+        if (selectedItem) {
+            form.setFieldsValue(selectedItem)
+        } else {
+            form.resetFields()
+        }
+    }, [form, selectedItem])
+
+
+    // calculate expenses
+    const [totalExpenses, setTotalExpenses] = useState(0)
+    const [totalOtherExpenses, setTotalOtherExpenses] = useState(0)
+
+    const calculateTotalExpenses = (expenses) => {
+        const total = expenses.reduce((sum, i) => sum + (i.money || 0), 0)
+        setTotalExpenses(total)
+    }
+    const calculateTotalOtherExpenses = (expenses) => {
+        const total = expenses.reduce((sum, i) => sum + (i.money || 0), 0)
+        setTotalOtherExpenses(total)
+    }
+
+    useEffect(() => {
+        if (data && otherExpenses) {
+            calculateTotalExpenses(data)
+            calculateTotalOtherExpenses(otherExpenses)
+        }
+    }, [data, otherExpenses])
 
 
     // table
@@ -26,25 +143,35 @@ const Price = () => {
             render: (_, { name }) => <span>{ name }</span>,
         },
         {
-            className: 'description',
             title: 'Описание',
             dataIndex: 'description',
             key: 'description',
-            width: '40%'
+            width: '40%',
+            render: (_, { description }) => <span>{ description || '__' }</span>,
         },
         {
             title: 'Харажат',
-            dataIndex: 'cost',
-            key: 'cost',
-            render: (_, { cost }) => <span>{ formatPrice(cost) } сум</span>,
+            dataIndex: 'money',
+            key: 'money',
+            render: (_, { money }) => <span>{ formatPrice(money) } сум</span>,
+        },
+        {
+            className: 'fw500',
+            title: 'Сана',
+            dataIndex: 'date',
+            key: 'date',
+            render: (_, { date }) => <span>{ new Date(date).toLocaleString() }</span>,
         },
         {
             title: 'Амаллар',
             key: 'actions',
             width: '150px',
-            render: (_, { id }) => (
+            render: (_, item) => (
                 <div className="actions">
-                    <button className='actions__btn edit' onClick={() => setModal('edit')}>
+                    <button className='actions__btn edit' onClick={() => {
+                        setModal('edit')
+                        setSelectedItem(item)
+                    }}>
                         <i className="fa-regular fa-pen-to-square"/>
                     </button>
                     <Popconfirm
@@ -52,7 +179,7 @@ const Price = () => {
                         description=' '
                         okText="Ха"
                         cancelText="Йок"
-                        // onConfirm={() => deleteWorker(id)}
+                        onConfirm={() => deleteItem(item.id)}
                     >
                         <button className='actions__btn delete'>
                             <i className="fa-regular fa-trash-can"/>
@@ -63,96 +190,10 @@ const Price = () => {
         },
     ]
 
-    const data = [
-        {
-            key: '1',
-            name: 'Комуналка',
-            cost: 3200000,
-            description: 'lorem20 asd as daskj',
-        },
-        {
-            key: '2',
-            name: 'Аренда',
-            cost: 420000,
-        },
-    ]
-
-
-    // form
-    const validateMessages = {
-        required: '${label} толдирилиши шарт!',
-    }
-
-    const onFormSubmit = (values) => {
-        console.log(values);
-    }
-
-
-    // calculator
-    const [input, setInput] = useState('');
-    const [result, setResult] = useState('');
-    const [selectedOperator, setSelectedOperator] = useState('');
-
-    const handleClick = (e) => {
-
-        if (isNaN(e)) {
-            // If an operator button is clicked
-            if (selectedOperator && selectedOperator !== e) {
-                // If a different operator is already selected, update the selected operator
-                setSelectedOperator(e);
-                setInput(input.slice(0, -1).concat(e));
-            } else if (!selectedOperator) {
-                // Otherwise, select the operator and append it to the input
-                setSelectedOperator(e);
-                setInput(input.concat(e));
-            }
-        } else {
-            // If a number button is clicked
-            if (selectedOperator) {
-                // If an operator is already selected, append the number to the input after the operator
-                if (input.slice(-1) === selectedOperator) {
-                    setInput(input.concat(e));
-                } else {
-                    setInput(input + selectedOperator + e);
-                }
-                setSelectedOperator('');
-            } else {
-                // Otherwise, simply append the number to the input
-                setInput(input.concat(e));
-            }
-        }
-    };
-    console.log(input)
-
-    const clear = () => {
-        setInput('');
-        setResult('');
-        setSelectedOperator('');
-    };
-
-    const calculate = () => {
-        try {
-            setResult(math.evaluate(input).toString());
-            setSelectedOperator('');
-        } catch (err) {
-            setResult('Error');
-        }
-    };
-
-    const percentage = () => {
-        try {
-            const evalResult = math.evaluate(input) / 100; // Calculate percentage
-            setInput(evalResult.toString());
-            setResult(evalResult.toString());
-            setSelectedOperator('');
-        } catch (error) {
-            setResult('Error');
-        }
-    }
-
 
     return (
         <div className="price page">
+            <Calculator modal={modal} setModal={setModal} />
             <div className="container">
                 <Title
                     title='Пул менежменти'
@@ -169,129 +210,63 @@ const Price = () => {
                 />
                 <div className="content">
                     <h3 className="content__title fw600 mb2">
-                        Хаммаси болиб: <span>{formatPrice(170000)}</span> сум
+                        Харажатлар: <span>{formatPrice(totalExpenses)}</span> сум
                         <div className='grid align-center'>
                             <span/>
                             <i className="fa-solid fa-plus"/>
                             <i className="fa-solid fa-equals"/>
                             <div>
-                                <span className='red'>{formatPrice(370000)}</span> сум
+                                <span className='red'>{formatPrice(totalExpenses + totalOtherExpenses)}</span> сум
                             </div>
                         </div>
-                        Бошка харажатлар: <span>{formatPrice(200000)}</span> сум
+                        Бошка харажатлар: <span>{formatPrice(totalOtherExpenses)}</span> сум
                     </h3>
                     <Table columns={columns} dataSource={data} />
                 </div>
             </div>
             <Modal
-                title={modal === 'add' ? "Харажат кошиш" : "Харажат озгартириш"}
+                title={modal === 'add' ? "Кошиш" : "Озгартириш"}
                 style={{
                     top: 20,
                 }}
                 open={modal !== 'close' && modal !== 'calc'}
-                // onOk={() => setModal('close')}
-                onCancel={() => setModal('close')}
-                okText='Тасдиклаш'
-                cancelText='Бекор килиш'
+                onCancel={() => {
+                    setModal('close')
+                    setSelectedItem(null)
+                }}
             >
                 <Form
                     onFinish={onFormSubmit}
                     layout='vertical'
                     validateMessages={validateMessages}
+                    form={form}
                 >
                     <Form.Item
-                        name='cost'
+                        name='name'
                         label="Харажат"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                        rules={[{ required: true }]}
                     >
-                        <Input placeholder='Харажат' />
+                        <Input placeholder='Харажат'/>
                     </Form.Item>
                     <Form.Item
-                        name='amount'
+                        name='money'
                         label="Нарх"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                        rules={[{ required: true }]}
                     >
-                        <Input placeholder='Нарх' type='number' />
+                        <Input placeholder='Нарх' type='number'/>
                     </Form.Item>
                     <Form.Item
                         name='description'
                         label="Описание"
                     >
-                        <Input.TextArea placeholder='Описание' />
+                        <Input.TextArea placeholder='Описание'/>
                     </Form.Item>
+                    <div className='end mt1'>
+                        <Button type="primary" htmlType="submit" size='large' loading={loading}>
+                            Тасдиклаш
+                        </Button>
+                    </div>
                 </Form>
-            </Modal>
-
-            <Modal
-                className='price-modal'
-                title='Калькулятор'
-                style={{
-                    top: 20,
-                    right: 190,
-                }}
-                width='300px'
-                open={modal === 'calc'}
-                // onOk={() => setModal('close')}
-                onCancel={() => setModal('close')}
-                footer={false}
-            >
-                <div className="calculator">
-                    <div className="display">
-                        <input type="text" value={input} disabled/>
-                        <div className="result">{result}</div>
-                    </div>
-                    <div className="">
-                        <div className='buttons'>
-                            <button onClick={clear}>C</button>
-                            <button onClick={percentage}>
-                                <i className="fa-solid fa-percent"/>
-                            </button>
-                            <button onClick={() => handleClick('/')}>
-                                <i className="fa-solid fa-divide"/>
-                            </button>
-                        </div>
-                        <div className='buttons'>
-                            {['7', '8', '9'].map((i) => (
-                                <button key={i} onClick={() => handleClick(i)}>{i}</button>
-                            ))}
-                            <button onClick={() => handleClick('*')}>
-                                <i className="fa-solid fa-xmark"/>
-                            </button>
-                        </div>
-                        <div className='buttons'>
-                            {['4', '5', '6'].map((i) => (
-                                <button key={i} onClick={() => handleClick(i)}>{i}</button>
-                            ))}
-                            <button onClick={() => handleClick('-')}>
-                                <i className="fa-solid fa-minus"/>
-                            </button>
-                        </div>
-                        <div className='buttons'>
-                            {['1', '2', '3'].map((i) => (
-                                <button key={i} onClick={() => handleClick(i)}>{i}</button>
-                            ))}
-                            <button onClick={() => handleClick('+')}>
-                                <i className="fa-solid fa-plus"/>
-                            </button>
-                        </div>
-                        <div className='buttons'>
-                            {['0', '.'].map((i) => (
-                                <button key={i} onClick={() => handleClick(i)}>{i}</button>
-                            ))}
-                            <button onClick={() => calculate()}>
-                                <i className="fa-solid fa-equals"/>
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </Modal>
         </div>
     );

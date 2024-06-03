@@ -46,4 +46,19 @@
   padding-bottom: 1rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid #CBD5E1;
+
+  .btn {
+    width: 50px;
+    height: 40px;
+    padding: 10px;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 5px 20px 0 #66666640;
+
+    i {
+      font-size: 18px;
+      height: 16px;
+      color: $main-color;
+    }
+  }
 }

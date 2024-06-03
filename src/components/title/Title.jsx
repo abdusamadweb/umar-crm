@@ -1,9 +1,21 @@
 import './Title.scss'
 import React from 'react';
+import {useNavigate} from "react-router-dom";
 
-const Title = ({ title, btn, click, icon, additional }) => {
+const Title = ({ title, btn, click, icon, additional, navigate }) => {
 
-    if (!btn) return <h2 className="page-title">{ title }</h2>
+    const navigatee = useNavigate()
+
+    if (!btn) return (
+        <div className='page-title row align-center g1'>
+            {
+                navigate && <button className='btn' onClick={() => navigatee(-1)}>
+                    <i className="fa-solid fa-arrow-left-long"/>
+                </button>
+            }
+            <h2>{title}</h2>
+        </div>
+    )
 
     return (
         <div className='titles'>

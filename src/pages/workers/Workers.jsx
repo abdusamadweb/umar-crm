@@ -6,6 +6,7 @@ import {formatPhone, formatPrice} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData, fetchCategory} from "../../api/request.js";
+import toast from "react-hot-toast";
 
 const { Option } = Select
 
@@ -14,6 +15,7 @@ const Workers = () => {
     const [form] = Form.useForm()
 
     const [modal, setModal] = useState('close')
+    const [loading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
 
@@ -46,38 +48,59 @@ const Workers = () => {
     // add & edit
     const { mutate } = useMutation({
         mutationFn: (values) => {
-            console.log(values, 'fn')
+            setLoading(true)
+            return addOrEdit('workers', values, selectedItem?.id || false)
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Кошилди!')
 
-            return addOrEdit('workers', values, selectedItem?.id || false);
-        },
-        onSuccess: async (res) => {
-            console.log(res, 'success')
             setModal('close')
+            setSelectedItem(null)
+            setLoading(false)
+            form.resetFields()
         },
-        onError: async (err) => {
-            console.log(err, 'error')
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+            setLoading(false)
         }
     })
 
     const onFormSubmit = (values) => {
         mutate(values)
-        setSelectedItem(null)
     }
 
 
     // delete
     const { mutate: deleteItem } = useMutation({
         mutationFn: (id) => {
-
             return deleteData('workers', id)
         },
-        onSuccess: async (res) => {
-            console.log(res, 'success')
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Очирилди!')
         },
-        onError: async (err) => {
-            console.log(err, 'error')
+        onError: async () => {
+            toast.error('Серверда муаммо!')
         }
     })
+
+
+    // form
+    const validateMessages = {
+        required: '${label} толдирилиши шарт!',
+    }
+
+    useEffect(() => {
+        if (selectedItem) {
+            form.setFieldsValue({
+                ...selectedItem,
+                category: selectedItem.category?.id,
+            })
+        } else {
+            form.resetFields()
+        }
+    }, [form, selectedItem])
 
 
     // table
@@ -127,6 +150,7 @@ const Workers = () => {
             },
         },
         {
+            className: 'fw500',
             title: 'Маоши',
             dataIndex: 'salary',
             key: 'salary',
@@ -165,23 +189,6 @@ const Workers = () => {
     ]
 
 
-    // form
-    const validateMessages = {
-        required: '${label} толдирилиши шарт!',
-    }
-
-    useEffect(() => {
-        if (selectedItem) {
-            form.setFieldsValue({
-                ...selectedItem,
-                category: selectedItem.category?.name,
-            })
-        } else {
-            form.resetFields()
-        }
-    }, [form, selectedItem])
-
-
     return (
         <div className='workers page'>
             <div className="container">
@@ -198,7 +205,7 @@ const Workers = () => {
                 </div>
             </div>
             <Modal
-                title={modal === 'add' ? "Ходим кошиш" : "Ходимни озгартириш"}
+                title={modal === 'add' ? "Кошиш" : "Озгартириш"}
                 style={{
                     top: 20,
                 }}
@@ -245,7 +252,7 @@ const Workers = () => {
                     >
                         <Select size="large" placeholder="Танланг">
                             {category?.map(i => (
-                                <Option key={i?.id} value={i?.name}>
+                                <Option key={i?.id} value={i?.id}>
                                     {i?.name}
                                 </Option>
                             ))}
@@ -264,7 +271,7 @@ const Workers = () => {
                         <Input.TextArea placeholder='Турар жойи' />
                     </Form.Item>
                     <div className='end mt1'>
-                        <Button type="primary" htmlType="submit" size='large'>
+                        <Button type="primary" htmlType="submit" size='large' loading={loading}>
                             Тасдиклаш
                         </Button>
                     </div>

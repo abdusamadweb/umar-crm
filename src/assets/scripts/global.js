@@ -29,5 +29,3 @@ export const formatPhone = (str) => {
     })
     return formatted.join("")
 }
-
-

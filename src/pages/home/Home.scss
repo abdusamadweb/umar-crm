@@ -20,7 +20,7 @@
 
     .boxes {
       grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 1rem;
+      gap: 2rem;
 
       @include breakpoint-down(1600px) {
         grid-template-columns: 1fr 1fr 1fr;
@@ -35,7 +35,7 @@
 
     &__diver {
       position: relative;
-      min-height: 140px;
+      min-height: 150px;
       display: flex;
       flex-flow: column;
       justify-content: space-between;
@@ -74,7 +74,7 @@
         right: 1rem;
 
         i {
-          font-size: 28px;
+          font-size: 32px;
 
           @include tablet {
             font-size: 24px;
@@ -104,18 +104,19 @@
 
     &__txt {
       display: block;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 1.4;
       margin-right: 2.6rem;
       opacity: 0.8;
     }
     &__num {
       font-weight: 500;
       font-size: 17px;
-      color: $main-color;
 
       &.num {
         font-weight: 600;
-        color: #AD1FEA;
+        font-size: 22px;
       }
     }
 

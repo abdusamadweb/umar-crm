@@ -6,7 +6,7 @@ export const TOKEN = 'Bearer 7nuimEOYjVeFI539YcdNlCbKGcKolrOecEFZ29id'
 const $api = axios.create({
     baseURL: API,
     headers: {
-        "Content-Type": "application/json",
+        "Content-Type": 'application/x-www-form-urlencoded',
         Authorization: TOKEN,
 
     },
