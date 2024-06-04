@@ -5,7 +5,7 @@ import 'react-calendar/dist/Calendar.css'
 import Title from "../../components/title/Title.jsx"
 import $api from "../../api/apiConfig.js"
 import {useQuery} from "react-query"
-import CountUp from 'react-countup';
+import CountUp from 'react-countup'
 
 const Home = () => {
 
