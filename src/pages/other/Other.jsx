@@ -1,12 +1,13 @@
 import './Other.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Table} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Table, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
+import Calculator from "../../components/calculator/Calculator.jsx";
 
 const Other = () => {
 
@@ -161,12 +162,20 @@ const Other = () => {
 
     return (
         <div className="other page">
+            <Calculator modal={modal} setModal={setModal} />
             <div className="container">
                 <Title
                     title='Бошка харажатлар'
                     btn='Кошиш'
                     click={() => setModal('add')}
                     icon={true}
+                    additional={
+                        <Tooltip title='Калькулятор'>
+                            <button className='additional-btn' onClick={() => setModal('calc')}>
+                                <i className="fa-solid fa-calculator"/>
+                            </button>
+                        </Tooltip>
+                    }
                 />
                 <div className="content">
                     <h3 className="content__title fw600 mb2">Хаммаси болиб: <span>{ formatPrice(totalExpenses) }</span> сум</h3>
@@ -178,7 +187,7 @@ const Other = () => {
                 style={{
                     top: 20,
                 }}
-                open={modal !== 'close'}
+                open={modal !== 'close' && modal !== 'calc'}
                 onCancel={() => {
                     setModal('close')
                     setSelectedItem(null)
