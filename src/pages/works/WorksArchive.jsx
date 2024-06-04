@@ -1,16 +1,13 @@
 import React, {useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Popconfirm, Segmented, Table, Tooltip} from "antd";
+import {Popconfirm, Segmented, Table} from "antd";
 import {formatPrice} from "../../assets/scripts/global.js";
-import {Link} from "react-router-dom";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
 
-const Archive = () => {
-
-    const [modal, setModal] = useState('close')
+const WorksArchive = () => {
 
     const [value, setValue] = useState(localStorage.getItem('work') || 'Абшивка')
 
@@ -64,6 +61,19 @@ const Archive = () => {
             dataIndex: 'worker',
             key: 'worker',
             render: (_, { worker }) => <span>{ worker.name }</span>,
+        },
+        {
+            title: 'Мебел номи',
+            dataIndex: 'mebelName',
+            key: 'mebelName',
+            render: (_, { mebelName }) => <span>{ mebelName || '__' }</span>,
+        },
+        {
+            title: 'Описание',
+            dataIndex: 'description',
+            key: 'description',
+            width: '20%',
+            render: (_, { description }) => <span>{ description || '__' }</span>,
         },
         {
             className: 'fw500',
@@ -139,4 +149,4 @@ const Archive = () => {
     );
 };
 
-export default Archive;
+export default WorksArchive;

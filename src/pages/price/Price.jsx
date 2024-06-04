@@ -1,8 +1,8 @@
 import './Price.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Table, Tooltip} from "antd";
-import {formatPrice} from "../../assets/scripts/global.js";
+import {Button, Form, Input, Modal, Popconfirm, Select, Table, Tooltip} from "antd";
+import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
@@ -93,13 +93,12 @@ const Price = () => {
 
 
     // form
-    const validateMessages = {
-        required: '${label} толдирилиши шарт!',
-    }
-
     useEffect(() => {
         if (selectedItem) {
-            form.setFieldsValue(selectedItem)
+            form.setFieldsValue({
+                ...selectedItem,
+                expense: selectedItem.expense,
+            })
         } else {
             form.resetFields()
         }
@@ -111,11 +110,18 @@ const Price = () => {
     const [totalOtherExpenses, setTotalOtherExpenses] = useState(0)
 
     const calculateTotalExpenses = (expenses) => {
-        const total = expenses.reduce((sum, i) => sum + (i.money || 0), 0)
+        const total = expenses.reduce((sum, i) => {
+            if (i.expense === true) {
+                return sum - (i.money || 0)
+            } else if (i.expense === false) {
+                return sum + (i.money || 0)
+            }
+            return sum
+        }, 0)
         setTotalExpenses(total)
     }
     const calculateTotalOtherExpenses = (expenses) => {
-        const total = expenses.reduce((sum, i) => sum + (i.money || 0), 0)
+        const total = expenses.reduce((sum, i) => sum - (i.money || 0), 0)
         setTotalOtherExpenses(total)
     }
 
@@ -150,10 +156,11 @@ const Price = () => {
             render: (_, { description }) => <span>{ description || '__' }</span>,
         },
         {
+            className: 'fw600',
             title: 'Харажат',
             dataIndex: 'money',
             key: 'money',
-            render: (_, { money }) => <span>{ formatPrice(money) } сум</span>,
+            render: (_, { money, expense }) => <span className={expense ? 'red' : 'green'}>{ expense ? '-' : '+' }{ formatPrice(money) } сум</span>,
         },
         {
             className: 'fw500',
@@ -216,7 +223,7 @@ const Price = () => {
                             <i className="fa-solid fa-plus"/>
                             <i className="fa-solid fa-equals"/>
                             <div>
-                                <span className='red'>{formatPrice(totalExpenses + totalOtherExpenses)}</span> сум
+                                <span className={(totalExpenses + totalOtherExpenses) > 0 ? 'green' : 'red'}>{formatPrice(totalExpenses + totalOtherExpenses)}</span> сум
                             </div>
                         </div>
                         Бошка харажатлар: <span>{formatPrice(totalOtherExpenses)}</span> сум
@@ -242,8 +249,22 @@ const Price = () => {
                     form={form}
                 >
                     <Form.Item
+                        name='expense'
+                        label="Тури"
+                        rules={[{required: true}]}
+                    >
+                        <Select size="large" placeholder="Танланг">
+                            <Select.Option value={false}>
+                                Фойда
+                            </Select.Option>
+                            <Select.Option value={true}>
+                                Харажат
+                            </Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
                         name='name'
-                        label="Харажат"
+                        label="Харажат номи"
                         rules={[{ required: true }]}
                     >
                         <Input placeholder='Харажат'/>

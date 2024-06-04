@@ -10,9 +10,9 @@ import CountUp from 'react-countup';
 const Home = () => {
 
     // filter results
+    const [calendar, setCalendar] = useState(false)
     const today = new Date()
     const [filteredData, setFilteredData] = useState([])
-    const [calendar, setCalendar] = useState(false)
 
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())

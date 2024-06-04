@@ -6,8 +6,11 @@ import Auth from "../pages/auth/Auth.jsx";
 import Other from "../pages/other/Other.jsx";
 import Price from "../pages/price/Price.jsx";
 import Workers from "../pages/workers/Workers.jsx";
-import Archive from "../pages/works/Archive.jsx";
+import WorksArchive from "../pages/works/WorksArchive.jsx";
 import Works from "../pages/works/Works.jsx";
+import Partners from "../pages/partners/Partners.jsx";
+import PartnersArchive from "../pages/partners/PartnersArchive.jsx";
+import Davomat from "../pages/davomat/Davomat.jsx";
 
 
 // Non-protect-able routes
@@ -20,8 +23,11 @@ const publicRoutes = [
 const protectedRoutes = [
     { path: '/', element: <Home /> },
     { path: '/works', element: <Works /> },
-    { path: '/works/archive', element: <Archive /> },
+    { path: '/works/archive', element: <WorksArchive /> },
+    { path: '/partners', element: <Partners /> },
+    { path: '/partners/archive', element: <PartnersArchive /> },
     { path: '/workers', element: <Workers /> },
+    { path: '/davomat', element: <Davomat /> },
     { path: '/money-manage', element: <Price /> },
     { path: '/other', element: <Other /> },
 ]

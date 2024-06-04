@@ -13,8 +13,16 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             link: '/works'
         },
         {
+            name: 'Доконлар',
+            link: '/partners'
+        },
+        {
             name: 'Ходимлар',
             link: '/workers'
+        },
+        {
+            name: 'Давомат',
+            link: '/davomat'
         },
         {
             name: 'Пул менежменти',

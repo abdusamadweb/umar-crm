@@ -23,6 +23,13 @@ body {
   }
 }
 
+.red {
+  color: #ed2b46 !important;
+}
+.green {
+  color: #12b700 !important;
+}
+
 .page {
   min-height: 100vh;
   padding: 25px 0;
@@ -127,10 +134,6 @@ body {
   &-title {
     font-weight: 600 !important;
     font-size: 22px !important;
-    margin-bottom: 1rem !important;
-  }
-
-  &-body {
     margin-bottom: 1rem !important;
   }
 

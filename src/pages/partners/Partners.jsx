@@ -1,15 +1,15 @@
-import './Works.scss'
+import './Partners.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Segmented, Select, Table, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Select, Table, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import {Link} from "react-router-dom";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
-import {addOrEdit, deleteData, fetchCategory} from "../../api/request.js";
+import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
 
-const Works = () => {
+const Partners = () => {
 
     const [form] = Form.useForm()
 
@@ -17,21 +17,14 @@ const Works = () => {
     const [loading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
-    const [value, setValue] = useState(localStorage.getItem('work') || 'Абшивка')
-
-    const changeWork = (val) => {
-        setValue(val)
-        localStorage.setItem('work', val)
-    }
-
 
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get(`/works?whereRelation[category][name]=${value}`)
+        const { data } = await $api.get(`/partners`)
         return data
     }
     const { data, refetch } = useQuery(
-        ['works', value],
+        ['partners'],
         fetchData,
         {
             keepPreviousData: true,
@@ -55,23 +48,12 @@ const Works = () => {
     )
 
 
-    // fetch category
-    const { data: category } = useQuery(
-        ['category'],
-        fetchCategory,
-        {
-            keepPreviousData: true,
-            refetchOnWindowFocus: false
-        }
-    )
-
-
     // add & edit
     const { mutate } = useMutation({
         mutationFn: (values) => {
             setLoading(true)
             return addOrEdit(
-                'works',
+                'partners',
                 { ...values, createdAt: selectedItem ? selectedItem.createdAt : new Date() },
                 selectedItem?.id || false
             )
@@ -99,7 +81,7 @@ const Works = () => {
     // delete
     const { mutate: deleteItem } = useMutation({
         mutationFn: (id) => {
-            return deleteData('workers', id)
+            return deleteData('partners', id)
         },
         onSuccess: async () => {
             await refetch()
@@ -115,11 +97,11 @@ const Works = () => {
     const { mutate: addExpense } = useMutation({
         mutationFn: (values) => {
             const item = {
-                name: `${values.mebelName} - ${values.worker.name} ${values.category.name}`,
-                description: `${values.worker.name} - ${values.mebelName}ни ${values.category.name}сини килди. ${new Date(values.createdAt).toLocaleString()} дан ${new Date().toLocaleString()} га кадар тугатилди`,
+                name: `${values.mebelName} - СОТИЛДИ`,
+                description: `${values.mebelName} - Сотилди. ${values.worker.name} томонидан килинган ${values.mebelName} ${new Date().toLocaleString()} да сотилди.`,
                 money: values.money,
                 date: new Date(),
-                expense: true,
+                expense: false,
             }
             return addOrEdit('expenses', item)
         },
@@ -137,16 +119,18 @@ const Works = () => {
     const { mutate: archiveMutate } = useMutation({
         mutationFn: (values) => {
             const item = {
+                where: values.where,
                 worker: values.worker.id,
-                category: values.category.id,
                 mebelName: values.mebelName,
-                description: values.description,
+                money: values.money,
                 createdAt: values.createdAt,
                 archivedAt: new Date(),
-                where: values.where,
-                money: values.money,
+                material: values.material,
+                materialNumber: values.materialNumber,
+                materialPrice: values.materialPrice,
+                materialWhere: values.materialWhere,
             }
-            return addOrEdit('works-archive', item)
+            return addOrEdit('partners-archive', item)
         },
         onSuccess: async () => {
             await refetch()
@@ -169,7 +153,6 @@ const Works = () => {
         if (selectedItem) {
             form.setFieldsValue({
                 ...selectedItem,
-                category: selectedItem.category?.id,
                 worker: selectedItem.worker?.id,
             })
         } else {
@@ -188,10 +171,15 @@ const Works = () => {
             render: (_, __, index) => <span>{ index+1 }</span>,
         },
         {
-            title: 'Ходим',
+            title: 'Ким киганлиги',
             dataIndex: 'worker',
             key: 'worker',
             render: (_, { worker }) => <span>{ worker.name }</span>,
+        },
+        {
+            title: 'Докон',
+            dataIndex: 'where',
+            key: 'where'
         },
         {
             title: 'Мебел номи',
@@ -200,38 +188,40 @@ const Works = () => {
             render: (_, { mebelName }) => <span>{ mebelName || '__' }</span>,
         },
         {
-            title: 'Описание',
-            dataIndex: 'description',
-            key: 'description',
-            width: '22%',
-            render: (_, { description }) => <span>{ description || '__' }</span>,
+            title: 'Канчага койилганлиги',
+            dataIndex: 'money',
+            key: 'money',
+            render: (_, { money }) => <span>{ money ? `${formatPrice(money)} сум` : 'ишбай' }</span>,
         },
         {
             className: 'fw500',
-            title: 'Бошланган санаси',
+            title: 'Койилган санаси',
             dataIndex: 'createdAt',
             key: 'createdAt',
             render: (_, { createdAt }) => <span>{ new Date(createdAt).toLocaleString() }</span>,
         },
         {
-            title: 'Докон',
-            dataIndex: 'where',
-            key: 'where'
+            title: 'Материал',
+            dataIndex: 'material',
+            key: 'material',
+            render: (_, { material, materialNumber }) => <span>{ material + ' - ' + materialNumber }</span>,
         },
         {
-            title: 'Иш хаки',
-            dataIndex: 'money',
-            key: 'money',
-            render: (_, { money }) => <span>{ money ? `${formatPrice(money)} сум` : 'ишбай' }</span>,
+            title: 'Материал нархи',
+            dataIndex: 'materialPrice',
+            key: 'materialPrice',
+            render: (_, { materialPrice }) => <span>{ formatPrice(materialPrice) } сум</span>,
+        },
+        {
+            title: 'Материал катан олинган',
+            dataIndex: 'materialWhere',
+            key: 'materialWhere',
         },
         {
             title: 'Амаллар',
             key: 'actions',
             render: (_, item) => (
                 <div className="actions">
-                    {/*<button className='actions__btn view' onClick={() => setModal('view')}>*/}
-                    {/*    <i className="fa-solid fa-eye"/>*/}
-                    {/*</button>*/}
                     <button className='actions__btn edit' onClick={() => {
                         setModal('edit')
                         setSelectedItem(item)
@@ -262,7 +252,7 @@ const Works = () => {
             <div className="container">
                 <div className="workers__inner">
                     <Title
-                        title='Килинвотган ишлар'
+                        title='Доконлар'
                         btn='Кошиш'
                         click={() => setModal('add')}
                         icon={true}
@@ -275,14 +265,6 @@ const Works = () => {
                         }
                     />
                     <div className="content">
-                        <div className="content__tabs center mb1">
-                            <Segmented
-                                size={'large'}
-                                options={['Абшивка', 'Карказ', 'Тикув']}
-                                value={value}
-                                onChange={changeWork}
-                            />
-                        </div>
                         <Table
                             columns={columns}
                             dataSource={data}
@@ -308,6 +290,13 @@ const Works = () => {
                     form={form}
                 >
                     <Form.Item
+                        name='where'
+                        label="Докон"
+                        rules={[{required: true}]}
+                    >
+                        <Input placeholder='Докон'/>
+                    </Form.Item>
+                    <Form.Item
                         name='worker'
                         label="Ходим"
                         rules={[{required: true}]}
@@ -321,43 +310,46 @@ const Works = () => {
                         </Select>
                     </Form.Item>
                     <Form.Item
-                        name='category'
-                        label="Сохаси"
-                        rules={[{required: true}]}
-                    >
-                        <Select size="large" placeholder="Танланг">
-                            {category?.map(i => (
-                                <Select.Option key={i?.id} value={i?.id}>
-                                    {i?.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
                         name='mebelName'
                         label="Мебел номи"
+                        rules={[{required: true}]}
                     >
                         <Input placeholder='Мебел номи'/>
                     </Form.Item>
                     <Form.Item
-                        name='description'
-                        label="Описание"
-                    >
-                        <Input.TextArea placeholder='Описание'/>
-                    </Form.Item>
-                    <Form.Item
                         name='money'
-                        label="Иш хаки"
+                        label="Нархи"
+                        rules={[{required: true}]}
                     >
                         <Input placeholder='Иш хаки' type='number'/>
                     </Form.Item>
-                    <Form.Item
-                        name='where'
-                        label="Докон"
-                        rules={[{required: true}]}
-                    >
-                        <Input placeholder='Докон'/>
-                    </Form.Item>
+                    <div className='grid' style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px 1rem' }}>
+                        <Form.Item
+                            style={{ height: '44px' }}
+                            name='material'
+                            label="Материал номи"
+                        >
+                            <Input placeholder='Материал номи'/>
+                        </Form.Item>
+                        <Form.Item
+                            name='materialNumber'
+                            label="Материал номери"
+                        >
+                            <Input placeholder='Материал номери' type='number'/>
+                        </Form.Item>
+                        <Form.Item
+                            name='materialPrice'
+                            label="Материал нархи"
+                        >
+                            <Input placeholder='Материал нархи' type='number'/>
+                        </Form.Item>
+                        <Form.Item
+                            name='materialWhere'
+                            label="Материал каердан олинганлиги"
+                        >
+                            <Input placeholder='Материал каердан олинганлиги'/>
+                        </Form.Item>
+                    </div>
                     <div className='end mt1'>
                         <Button type="primary" htmlType="submit" size='large' loading={loading}>
                             Тасдиклаш
@@ -369,4 +361,4 @@ const Works = () => {
     );
 };
 
-export default Works;
+export default Partners;

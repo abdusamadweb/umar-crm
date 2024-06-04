@@ -2,7 +2,7 @@ import './Workers.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
 import {Button, Form, Input, InputNumber, Modal, Popconfirm, Select, Table, Tag} from "antd";
-import {formatPhone, formatPrice} from "../../assets/scripts/global.js";
+import {formatPhone, formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData, fetchCategory} from "../../api/request.js";
@@ -87,10 +87,6 @@ const Workers = () => {
 
 
     // form
-    const validateMessages = {
-        required: '${label} толдирилиши шарт!',
-    }
-
     useEffect(() => {
         if (selectedItem) {
             form.setFieldsValue({

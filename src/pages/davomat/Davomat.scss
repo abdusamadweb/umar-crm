@@ -1,0 +1,13 @@
+@use "src/scss" as *;
+
+.davomat {
+
+  .container {
+    max-width: 2500px;
+  }
+
+  .iframe {
+    border-radius: 15px;
+    border: 1px solid #CBD5E1;
+  }
+}

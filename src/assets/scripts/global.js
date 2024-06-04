@@ -1,9 +1,7 @@
 
-// site language
-export const lang = localStorage.getItem('lang') || 'en'
-export const changeLang = (lang) => {
-    localStorage.setItem('lang', lang)
-    window.location.reload()
+// form
+export const validateMessages = {
+    required: '${label} толдирилиши шарт!',
 }
 
 

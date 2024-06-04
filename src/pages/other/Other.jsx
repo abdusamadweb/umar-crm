@@ -2,7 +2,7 @@ import './Other.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
 import {Button, Form, Input, Modal, Popconfirm, Table} from "antd";
-import {formatPrice} from "../../assets/scripts/global.js";
+import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
@@ -78,10 +78,6 @@ const Other = () => {
 
 
     // form
-    const validateMessages = {
-        required: '${label} толдирилиши шарт!',
-    }
-
     useEffect(() => {
         if (selectedItem) {
             form.setFieldsValue(selectedItem)
