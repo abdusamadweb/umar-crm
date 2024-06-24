@@ -16,7 +16,7 @@ const Auth = () => {
         setLoading(true)
 
         if (login === 'admin' && password === '1') {
-            localStorage.setItem('token', TOKEN)
+            sessionStorage.setItem('token', TOKEN)
 
             toast.success('Хуш келибсиз!')
             setTimeout(() => navigate('/'), 1500)

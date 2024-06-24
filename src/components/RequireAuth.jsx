@@ -3,7 +3,7 @@ import {Navigate, Outlet} from "react-router-dom"
 
 const RequireAuth = () => {
     
-    const token = localStorage.getItem('token')
+    const token = sessionStorage.getItem('token')
 
     return (
         token ?
