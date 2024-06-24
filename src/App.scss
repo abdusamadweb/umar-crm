@@ -41,9 +41,16 @@ body {
   @include mobile {
     margin-left: calc(40px + 1rem);
   }
+  @include breakpoint-down(450px) {
+    margin-left: calc(40px);
+  }
 
   .container {
     padding-inline: 0 1rem;
+
+    @include breakpoint-down(450px) {
+      padding-inline: 10px;
+    }
   }
 
   .content {
@@ -159,4 +166,8 @@ body {
     font-weight: 500;
     font-size: 16px;
   }
+}
+
+.main-modal {
+  top: 20px;
 }

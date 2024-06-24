@@ -106,15 +106,23 @@ const Price = () => {
 
 
     // calculate expenses
+    const [totalProfit, setTotalProfit] = useState(0)
     const [totalExpenses, setTotalExpenses] = useState(0)
     const [totalOtherExpenses, setTotalOtherExpenses] = useState(0)
 
+    const calculateTotalProfit = (expenses) => {
+        const total = expenses.reduce((sum, i) => {
+            if (!i.expense) {
+                return sum + (i.money || 0)
+            }
+            return sum
+        }, 0)
+        setTotalProfit(total)
+    }
     const calculateTotalExpenses = (expenses) => {
         const total = expenses.reduce((sum, i) => {
-            if (i.expense === true) {
+            if (i.expense) {
                 return sum - (i.money || 0)
-            } else if (i.expense === false) {
-                return sum + (i.money || 0)
             }
             return sum
         }, 0)
@@ -127,6 +135,7 @@ const Price = () => {
 
     useEffect(() => {
         if (data && otherExpenses) {
+            calculateTotalProfit(data)
             calculateTotalExpenses(data)
             calculateTotalOtherExpenses(otherExpenses)
         }
@@ -186,6 +195,7 @@ const Price = () => {
                         description=' '
                         okText="Ха"
                         cancelText="Йок"
+                        placement='topRight'
                         onConfirm={() => deleteItem(item.id)}
                     >
                         <button className='actions__btn delete'>
@@ -196,6 +206,7 @@ const Price = () => {
             ),
         },
     ]
+    console.log(totalExpenses + totalProfit)
 
 
     return (
@@ -216,26 +227,42 @@ const Price = () => {
                     }
                 />
                 <div className="content">
-                    <h3 className="content__title fw600 mb2">
-                        Харажатлар: <span>{formatPrice(totalExpenses)}</span> сум
-                        <div className='grid align-center'>
-                            <span/>
-                            <i className="fa-solid fa-plus"/>
-                            <i className="fa-solid fa-equals"/>
-                            <div>
-                                <span className={(totalExpenses + totalOtherExpenses) > 0 ? 'green' : 'red'}>{formatPrice(totalExpenses + totalOtherExpenses)}</span> сум
+                    <div className="cards">
+                        <div className='card'>
+                            <div className='card__titles'>
+                                <h3 className='title'>Хаммаси болиб:</h3>
+                                <i className="fa-solid fa-file-invoice-dollar"/>
                             </div>
+                            <span className={`card__num ${((totalExpenses + totalOtherExpenses) + totalProfit) > 0 ? 'green' : 'red'}`}>{formatPrice((totalExpenses + totalOtherExpenses) + totalProfit)} сум</span>
                         </div>
-                        Бошка харажатлар: <span>{formatPrice(totalOtherExpenses)}</span> сум
-                    </h3>
-                    <Table columns={columns} dataSource={data} />
+                        <div className='card'>
+                            <div className='card__titles'>
+                                <h3 className='title'>Фойда:</h3>
+                                <i className="fa-solid fa-money-bill-transfer"/>
+                            </div>
+                            <span className='card__num green'>+{ formatPrice(totalProfit) } сум</span>
+                        </div>
+                        <div className='card'>
+                            <div className='card__titles'>
+                                <h3 className='title'>Харажатлар:</h3>
+                                <i className="fa-solid fa-money-bill-trend-up"/>
+                            </div>
+                            <span className='card__num red'>{ formatPrice(totalExpenses) } сум</span>
+                        </div>
+                        <div className='card'>
+                            <div className='card__titles'>
+                                <h3 className='title'>Бошка харажатлар:</h3>
+                                <i className="fa-solid fa-chart-line"/>
+                            </div>
+                            <span className='card__num'>{ formatPrice(totalOtherExpenses) } сум</span>
+                        </div>
+                    </div>
+                    <Table columns={columns} dataSource={data} scroll={{ x: 750 }} />
                 </div>
             </div>
             <Modal
+                className='main-modal'
                 title={modal === 'add' ? "Кошиш" : "Озгартириш"}
-                style={{
-                    top: 20,
-                }}
                 open={modal !== 'close' && modal !== 'calc'}
                 onCancel={() => {
                     setModal('close')
@@ -253,7 +280,7 @@ const Price = () => {
                         label="Тури"
                         rules={[{required: true}]}
                     >
-                        <Select size="large" placeholder="Танланг">
+                        <Select size="large" placeholder="Танланг" defaultValue={true}>
                             <Select.Option value={false}>
                                 Фойда
                             </Select.Option>

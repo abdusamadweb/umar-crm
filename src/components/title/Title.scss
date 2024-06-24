@@ -37,6 +37,32 @@
       color: $main-color;
     }
   }
+
+  @include mobile {
+    flex-flow: column;
+    justify-content: center;
+
+    &__title {
+      font-weight: 600;
+      font-size: 20px;
+    }
+
+    .g1 {
+      gap: 10px;
+    }
+
+    &__btn {
+      font-size: 14px;
+      padding: 8px 12px !important;
+    }
+    .additional-btn {
+      padding: 7px !important;
+
+      i {
+        font-size: 16px;
+      }
+    }
+  }
 }
 
 .page-title {
@@ -59,6 +85,26 @@
       font-size: 18px;
       height: 16px;
       color: $main-color;
+    }
+  }
+
+  @include mobile {
+
+    h2 {
+      flex: 1;
+      text-align: center;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .btn {
+      width: 45px;
+      height: 30px;
+      padding: 6px;
+
+      i {
+        font-size: 16px;
+      }
     }
   }
 }

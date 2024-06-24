@@ -1,7 +1,7 @@
-import './Other.scss'
+import './Products.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Table, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Table} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
@@ -9,7 +9,7 @@ import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
 import Calculator from "../../components/calculator/Calculator.jsx";
 
-const Other = () => {
+const Products = () => {
 
     const [form] = Form.useForm()
 
@@ -119,24 +119,42 @@ const Other = () => {
             render: (_, { name }) => <span>{ name }</span>,
         },
         {
-            title: 'Харажат',
-            dataIndex: 'money',
-            key: 'money',
-            render: (_, { money }) => <span>{ formatPrice(money) } сум</span>,
+            title: 'Курс $',
+            dataIndex: 'dollar',
+            key: 'dollar',
+            render: (_, { dollar }) => <span>{ formatPrice(dollar) } сум</span>,
         },
         {
-            className: 'fw500',
             title: 'Сана',
+            className: 'fw500',
             dataIndex: 'date',
             key: 'date',
-            render: (_, { date }) => <span>{ new Date(date).toLocaleString() }</span>,
+            render: (_, { date }) => <span>{ new Date(date).toLocaleDateString() }</span>,
+        },
+        {
+            title: 'Материал',
+            dataIndex: 'material',
+            key: 'material',
+            render: (_, { material }) => <span>{ material } $</span>,
+        },
+        {
+            title: 'Обший расход',
+            dataIndex: 'total',
+            key: 'total',
+            render: (_, { total }) => <span className='red'>-{ total } сум</span>,
         },
         {
             title: 'Амаллар',
             key: 'actions',
-            width: '150px',
+            width: '170px',
             render: (_, item) => (
                 <div className="actions">
+                    <button className='actions__btn view' onClick={() => {
+                        setModal('show')
+                        setSelectedItem(item)
+                    }}>
+                        <i className="fa-regular fa-eye"/>
+                    </button>
                     <button className='actions__btn edit' onClick={() => {
                         setModal('edit')
                         setSelectedItem(item)
@@ -166,20 +184,12 @@ const Other = () => {
             <Calculator modal={modal} setModal={setModal} />
             <div className="container">
                 <Title
-                    title='Бошка харажатлар'
+                    title='Моллар - хисоб китоби'
                     btn='Кошиш'
                     click={() => setModal('add')}
                     icon={true}
-                    additional={
-                        <Tooltip title='Калькулятор'>
-                            <button className='additional-btn' onClick={() => setModal('calc')}>
-                                <i className="fa-solid fa-calculator"/>
-                            </button>
-                        </Tooltip>
-                    }
                 />
                 <div className="content">
-                    <h3 className="content__title fw600 mb2">Хаммаси болиб: <span>{ formatPrice(totalExpenses) }</span> сум</h3>
                     <Table columns={columns} dataSource={data} />
                 </div>
             </div>
@@ -223,4 +233,4 @@ const Other = () => {
     );
 };
 
-export default Other
+export default Products

@@ -243,6 +243,7 @@ const Works = () => {
                         description=' '
                         okText="Ха"
                         cancelText="Йок"
+                        placement='topRight'
                         onConfirm={() => archiveItem(item)}
                     >
                         <Tooltip title="Архивлаш" placement="bottom">
@@ -291,10 +292,8 @@ const Works = () => {
                 </div>
             </div>
             <Modal
+                className='main-modal'
                 title={modal === 'add' ? "Кошиш" : "Озгартириш"}
-                style={{
-                    top: 20,
-                }}
                 open={modal !== 'close'}
                 onCancel={() => {
                     setModal('close')

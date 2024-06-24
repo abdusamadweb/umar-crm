@@ -25,6 +25,10 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             link: '/davomat'
         },
         {
+            name: 'Моллар',
+            link: '/products'
+        },
+        {
             name: 'Пул менежменти',
             link: '/money-manage'
         },

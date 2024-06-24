@@ -112,6 +112,7 @@ const WorksArchive = () => {
                         title="Очиришни хохлайсизми?"
                         okText="Ха"
                         cancelText="Йок"
+                        placement='topRight'
                         onConfirm={() => deleteItem(id)}
                     >
                         <button className='actions__btn delete'>

@@ -98,7 +98,7 @@ const Partners = () => {
         mutationFn: (values) => {
             const item = {
                 name: `${values.mebelName} - СОТИЛДИ`,
-                description: `${values.mebelName} - Сотилди. ${values.worker.name} томонидан килинган ${values.mebelName} ${new Date().toLocaleString()} да сотилди.`,
+                description: `${values.mebelName} - ${values.where} сотилди. ${values.worker.name} томонидан килинган ${values.mebelName} ${new Date(values.createdAt).toLocaleString()} шу санада койилган ва ${new Date().toLocaleString()} да ${values.where} да сотилди.`,
                 money: values.money,
                 date: new Date(),
                 expense: false,
@@ -233,6 +233,7 @@ const Partners = () => {
                         description=' '
                         okText="Ха"
                         cancelText="Йок"
+                        placement='topRight'
                         onConfirm={() => archiveItem(item)}
                     >
                         <Tooltip title="Архивлаш" placement="bottom">
@@ -273,10 +274,8 @@ const Partners = () => {
                 </div>
             </div>
             <Modal
+                className='main-modal'
                 title={modal === 'add' ? "Кошиш" : "Озгартириш"}
-                style={{
-                    top: 20,
-                }}
                 open={modal !== 'close'}
                 onCancel={() => {
                     setModal('close')

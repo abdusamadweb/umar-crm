@@ -16,7 +16,7 @@ const Header = () => {
             <div className="container">
                 <div className="header__inner">
                     <Link className='header__logos' to='/'>
-                        <h1 className={`header__logo ${openMenu && 'opa'}`}>UMAR - CRM</h1>
+                        <h1 className={`header__logo ${openMenu && 'opa'}`}>CRM</h1>
                     </Link>
                     <NavBar openMenu={openMenu} setOpenMenu={setOpenMenu} />
                     <div className='burger-menu'>

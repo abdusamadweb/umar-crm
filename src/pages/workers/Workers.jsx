@@ -173,6 +173,7 @@ const Workers = () => {
                         description=' '
                         okText="Ха"
                         cancelText="Йок"
+                        placement='topRight'
                         onConfirm={() => deleteItem(item?.id)}
                     >
                         <button className='actions__btn delete'>
@@ -201,10 +202,8 @@ const Workers = () => {
                 </div>
             </div>
             <Modal
+                className='main-modal'
                 title={modal === 'add' ? "Кошиш" : "Озгартириш"}
-                style={{
-                    top: 20,
-                }}
                 open={modal !== 'close'}
                 onCancel={() => {
                     setModal('close')
