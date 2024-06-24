@@ -20,7 +20,7 @@ const WorksArchive = () => {
     // fetch data
     const fetchData = async () => {
         const { data } = await $api.get(`/works-archive?whereRelation[category][name]=${value}`)
-        return data
+        return data.reverse()
     }
     const { data, refetch } = useQuery(
         ['works-archive', value],

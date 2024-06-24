@@ -89,6 +89,13 @@
 }
 
 .price-modal {
+  top: 20px;
+  right: 190px;
+
+  @include mobile {
+    right: 0;
+  }
+
   .ant-modal-close {
     display: none;
   }

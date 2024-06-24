@@ -21,7 +21,7 @@ const Partners = () => {
     // fetch data
     const fetchData = async () => {
         const { data } = await $api.get(`/partners`)
-        return data
+        return data.reverse()
     }
     const { data, refetch } = useQuery(
         ['partners'],
@@ -36,7 +36,7 @@ const Partners = () => {
     // fetch workers
     const fetchWorkers = async () => {
         const { data } = await $api.get('/workers')
-        return data
+        return data.reverse()
     }
     const { data: workers } = useQuery(
         ['workers'],

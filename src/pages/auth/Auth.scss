@@ -7,6 +7,10 @@
 
   &__inner {
     width: 500px;
+
+    @include mobile {
+      width: 350px;
+    }
   }
 
   .ant-form {

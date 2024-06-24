@@ -25,7 +25,7 @@ const Home = () => {
     // fetch workers
     const fetchWorkers = async () => {
         const { data } = await $api.get('/workers')
-        return data
+        return data.reverse()
     }
     const { data: workers } = useQuery(
         ['workers'],
@@ -40,7 +40,7 @@ const Home = () => {
     // fetch works
     const fetchWorks = async () => {
         const { data } = await $api.get('/works')
-        return data
+        return data.reverse()
     }
     const { data: works } = useQuery(
         ['works'],
@@ -55,7 +55,7 @@ const Home = () => {
     // fetch expenses
     const fetchOtherExpenses = async () => {
         const { data } = await $api.get('other-expenses')
-        return data
+        return data.reverse()
     }
     const { data: otherExpenses } = useQuery(
         ['other-expenses'],
@@ -68,7 +68,7 @@ const Home = () => {
 
     const fetchExpenses = async () => {
         const { data } = await $api.get('expenses')
-        return data
+        return data.reverse()
     }
     const { data: expenses } = useQuery(
         ['expenses'],

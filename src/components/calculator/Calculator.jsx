@@ -69,10 +69,6 @@ const Calculator = ({ modal, setModal }) => {
         <Modal
             className='price-modal'
             title='Калькулятор'
-            style={{
-                top: 20,
-                right: 190,
-            }}
             width='300px'
             open={modal === 'calc'}
             onCancel={() => setModal('close')}

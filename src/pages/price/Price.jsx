@@ -35,7 +35,7 @@ const Price = () => {
     // fetch other expenses
     const fetchOtherExpenses = async () => {
         const { data } = await $api.get('other-expenses')
-        return data
+        return data.reverse()
     }
     const { data: otherExpenses } = useQuery(
         ['other-expenses'],

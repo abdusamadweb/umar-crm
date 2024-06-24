@@ -23,5 +23,5 @@ export const deleteData = async (url, id) => {
 // fetch workers-category
 export const fetchCategory = async () => {
     const { data } = await $api.get('/workers_category')
-    return data
+    return data.reverse()
 }

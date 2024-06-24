@@ -28,7 +28,7 @@ const Works = () => {
     // fetch data
     const fetchData = async () => {
         const { data } = await $api.get(`/works?whereRelation[category][name]=${value}`)
-        return data
+        return data.reverse()
     }
     const { data, refetch } = useQuery(
         ['works', value],
@@ -43,7 +43,7 @@ const Works = () => {
     // fetch workers
     const fetchWorkers = async () => {
         const { data } = await $api.get('/workers')
-        return data
+        return data.reverse()
     }
     const { data: workers } = useQuery(
         ['workers'],

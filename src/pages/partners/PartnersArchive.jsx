@@ -12,7 +12,7 @@ const PartnersArchive = () => {
     // fetch data
     const fetchData = async () => {
         const { data } = await $api.get(`/partners-archive`)
-        return data
+        return data.reverse()
     }
     const { data, refetch } = useQuery(
         ['partners-archive'],
