@@ -142,6 +142,19 @@ const Price = () => {
     }, [data, otherExpenses])
 
 
+    // form
+    useEffect(() => {
+        if (selectedItem) {
+            form.setFieldsValue({
+                ...selectedItem,
+                expense: selectedItem.expense || false,
+            })
+        } else {
+            form.resetFields()
+        }
+    }, [form, selectedItem])
+
+
     // table
     const columns = [
         {
@@ -206,7 +219,6 @@ const Price = () => {
             ),
         },
     ]
-    console.log(totalExpenses + totalProfit)
 
 
     return (
@@ -274,13 +286,14 @@ const Price = () => {
                     layout='vertical'
                     validateMessages={validateMessages}
                     form={form}
+                    initialValues={{ expense: true }}
                 >
                     <Form.Item
                         name='expense'
                         label="Тури"
                         rules={[{required: true}]}
                     >
-                        <Select size="large" placeholder="Танланг" defaultValue={true}>
+                        <Select size="large" placeholder="Танланг">
                             <Select.Option value={false}>
                                 Фойда
                             </Select.Option>
