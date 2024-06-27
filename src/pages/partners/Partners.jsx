@@ -269,6 +269,7 @@ const Partners = () => {
                         <Table
                             columns={columns}
                             dataSource={data}
+                            scroll={{ x: 750 }}
                         />
                     </div>
                 </div>

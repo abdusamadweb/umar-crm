@@ -142,7 +142,11 @@ const WorksArchive = () => {
                                 onChange={changeWork}
                             />
                         </div>
-                        <Table columns={columns} dataSource={data} />
+                        <Table
+                            columns={columns}
+                            dataSource={data}
+                            scroll={{ x: 750 }}
+                        />
                     </div>
                 </div>
             </div>

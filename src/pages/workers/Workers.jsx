@@ -197,7 +197,11 @@ const Workers = () => {
                         icon={true}
                     />
                     <div className="content">
-                        <Table columns={columns} dataSource={data} />
+                        <Table
+                            columns={columns}
+                            dataSource={data}
+                            scroll={{ x: 750 }}
+                        />
                     </div>
                 </div>
             </div>

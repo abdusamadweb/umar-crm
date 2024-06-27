@@ -269,7 +269,11 @@ const Price = () => {
                             <span className='card__num'>{ formatPrice(totalOtherExpenses) } сум</span>
                         </div>
                     </div>
-                    <Table columns={columns} dataSource={data} scroll={{ x: 750 }} />
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        scroll={{ x: 750 }}
+                    />
                 </div>
             </div>
             <Modal
