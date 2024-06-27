@@ -1,13 +1,14 @@
 import './Price.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Select, Table, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Select, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
 import Calculator from "../../components/calculator/Calculator.jsx";
+import Tables from "../../components/tables/Tables.jsx";
 
 const Price = () => {
 
@@ -17,14 +18,25 @@ const Price = () => {
     const [loading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
+    const [search, setSearch] = useState('')
+
+    const [fromDate, setFromDate] = useState(new Date())
+    const [toDate, setToDate] = useState(new Date())
+
+    console.log(fromDate.toDateString(), '-', toDate.toDateString())
+
 
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get('expenses')
+        const { data } = await $api.get(search !== '' ? `expenses?timestamps&where[name][like]=${search}` : 'expenses?timestamps', {
+            params: {
+                // sort: `created_at:DESC`,
+            }
+        })
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['expenses'],
+        ['expenses', search],
         fetchData,
         {
             keepPreviousData: true,
@@ -269,10 +281,14 @@ const Price = () => {
                             <span className='card__num'>{ formatPrice(totalOtherExpenses) } сум</span>
                         </div>
                     </div>
-                    <Table
+                    <Tables
+                        data={data}
                         columns={columns}
-                        dataSource={data}
-                        scroll={{ x: 750 }}
+                        setSearch={setSearch}
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        setFromDate={setFromDate}
+                        setToDate={setToDate}
                     />
                 </div>
             </div>
