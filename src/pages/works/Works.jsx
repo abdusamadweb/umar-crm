@@ -287,7 +287,7 @@ const Works = () => {
                         <Table
                             columns={columns}
                             dataSource={data}
-                            scroll={{ x: 750 }}
+                            scroll={{ x: 550 }}
                         />
                     </div>
                 </div>

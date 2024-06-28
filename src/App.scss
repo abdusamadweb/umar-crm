@@ -72,6 +72,7 @@ body {
 }
 
 .ant-table {
+
   &-cell:nth-child(2) {
     font-weight: 600;
   }
@@ -127,6 +128,14 @@ body {
       i {
         color: #979da9;
       }
+    }
+  }
+
+  @include mobile {
+    font-size: 90% !important;
+
+    .ant-table-cell {
+      padding: 12px 10px !important;
     }
   }
 }

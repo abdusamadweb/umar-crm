@@ -11,6 +11,9 @@
     @include mobile {
       width: 333px;
     }
+    @include breakpoint-down(360px) {
+      width: 280px;
+    }
   }
 
   .ant-form {

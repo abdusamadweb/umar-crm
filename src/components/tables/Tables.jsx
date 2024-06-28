@@ -16,7 +16,7 @@ const Tables = ({ data, columns, setSearch, fromDate, toDate, setFromDate, setTo
             <Table
                 columns={columns}
                 dataSource={data}
-                scroll={{ x: 750 }}
+                scroll={{ x: 550 }}
             />
         </div>
     );

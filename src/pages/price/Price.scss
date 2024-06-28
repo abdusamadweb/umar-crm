@@ -7,6 +7,39 @@
   }
 
   .content {
+    @include mobile {
+      padding: 10px;
+    }
+
+    .search {
+      @include mobile {
+        gap: 10px;
+
+        input {
+          font-size: 14px;
+          padding-block: 5px;
+        }
+
+        .ant-btn {
+          width: 32px;
+          height: 32px;
+
+          .anticon {
+            font-size: 15px;
+          }
+        }
+
+        .btn {
+          width: 32px;
+          height: 32px;
+          padding: 2px;
+
+          i {
+            font-size: 14px;
+          }
+        }
+      }
+    }
 
     .cards {
       display: grid;
@@ -89,6 +122,20 @@
     &__tabs {
       .ant-segmented {
         font-weight: 500;
+
+        &-item-label {
+
+
+          @include breakpoint-down(480px) {
+            font-size: 14px;
+          }
+          @include breakpoint-down(430px) {
+            min-height: 30px;
+            font-weight: 600;
+            font-size: 12px;
+            padding-inline: 2px;
+          }
+        }
       }
     }
   }

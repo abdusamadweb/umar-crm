@@ -187,7 +187,7 @@ const Price = () => {
             title: '№',
             dataIndex: 'index',
             key: 'index',
-            width: 50,
+            width: 30,
             render: (_, __, index) => <span>{ index+1 }</span>,
         },
         {
