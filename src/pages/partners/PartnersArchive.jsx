@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Title from "../../components/title/Title.jsx";
 import {Popconfirm, Table} from "antd";
 import {formatPrice} from "../../assets/scripts/global.js";
@@ -6,16 +6,28 @@ import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
+import Tables from "../../components/tables/Tables.jsx";
 
 const PartnersArchive = () => {
 
+    const [search, setSearch] = useState('')
+
+    const [fromDate, setFromDate] = useState(new Date())
+    const [toDate, setToDate] = useState(new Date())
+
+
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get(`/partners-archive`)
+        const eSearch = encodeURIComponent(search)
+        const url = search !== ''
+            ? `partners-archive?timestamps&where[where][like]=${eSearch}`
+            : `partners-archive?timestamps`
+
+        const { data } = await $api.get(url)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['partners-archive'],
+        ['partners-archive', search],
         fetchData,
         {
             keepPreviousData: true,
@@ -126,10 +138,14 @@ const PartnersArchive = () => {
                         navigate={true}
                     />
                     <div className="content">
-                        <Table
+                        <Tables
+                            data={data}
                             columns={columns}
-                            dataSource={data}
-                            scroll={{ x: 750 }}
+                            setSearch={setSearch}
+                            fromDate={fromDate}
+                            toDate={toDate}
+                            setFromDate={setFromDate}
+                            setToDate={setToDate}
                         />
                     </div>
                 </div>

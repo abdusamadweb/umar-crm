@@ -8,6 +8,7 @@ import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
+import Tables from "../../components/tables/Tables.jsx";
 
 const Partners = () => {
 
@@ -17,14 +18,24 @@ const Partners = () => {
     const [loading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
+    const [search, setSearch] = useState('')
+
+    const [fromDate, setFromDate] = useState(new Date())
+    const [toDate, setToDate] = useState(new Date())
+
 
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get(`/partners`)
+        const eSearch = encodeURIComponent(search)
+        const url = search !== ''
+            ? `partners?timestamps&where[where][like]=${eSearch}`
+            : `partners?timestamps`
+
+        const { data } = await $api.get(url)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['partners'],
+        ['partners', search],
         fetchData,
         {
             keepPreviousData: true,
@@ -54,7 +65,11 @@ const Partners = () => {
             setLoading(true)
             return addOrEdit(
                 'partners',
-                { ...values, createdAt: selectedItem ? selectedItem.createdAt : new Date() },
+                {
+                    ...values,
+                    createdAt: selectedItem ? selectedItem.createdAt : new Date(),
+                    category: 'Ишхона'
+                },
                 selectedItem?.id || false
             )
         },
@@ -266,10 +281,14 @@ const Partners = () => {
                         }
                     />
                     <div className="content">
-                        <Table
+                        <Tables
+                            data={data}
                             columns={columns}
-                            dataSource={data}
-                            scroll={{ x: 750 }}
+                            setSearch={setSearch}
+                            fromDate={fromDate}
+                            toDate={toDate}
+                            setFromDate={setFromDate}
+                            setToDate={setToDate}
                         />
                     </div>
                 </div>

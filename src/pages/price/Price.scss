@@ -85,6 +85,12 @@
         }
       }
     }
+
+    &__tabs {
+      .ant-segmented {
+        font-weight: 500;
+      }
+    }
   }
 }
 

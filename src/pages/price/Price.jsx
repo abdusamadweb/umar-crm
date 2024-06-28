@@ -1,7 +1,7 @@
 import './Price.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Select, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Segmented, Select, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
@@ -18,25 +18,26 @@ const Price = () => {
     const [loading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
+    const [tab, setTab] = useState(localStorage.getItem('money-manage') || 'Хаммаси')
+
     const [search, setSearch] = useState('')
 
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
 
-    console.log(fromDate.toDateString(), '-', toDate.toDateString())
-
 
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get(search !== '' ? `expenses?timestamps&where[name][like]=${search}` : 'expenses?timestamps', {
-            params: {
-                // sort: `created_at:DESC`,
-            }
-        })
+        const eSearch = encodeURIComponent(search)
+        const url = search !== ''
+            ? `expenses?timestamps${tab !== 'Хаммаси' && `&where[category]=${tab}`}&where[name][like]=${eSearch}`
+            : `expenses?timestamps${tab !== 'Хаммаси' && `&where[category]=${tab}`}`
+
+        const { data } = await $api.get(url)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['expenses', search],
+        ['expenses', search, tab],
         fetchData,
         {
             keepPreviousData: true,
@@ -154,6 +155,19 @@ const Price = () => {
     }, [data, otherExpenses])
 
 
+    // change tab
+    const changeTab = (val) => {
+        setTab(val)
+        localStorage.setItem('money-manage', val)
+    }
+
+    useEffect(() => {
+        if (search !== '') {
+            setTab('Хаммаси')
+        }
+    }, [search])
+
+
     // form
     useEffect(() => {
         if (selectedItem) {
@@ -257,29 +271,38 @@ const Price = () => {
                                 <h3 className='title'>Хаммаси болиб:</h3>
                                 <i className="fa-solid fa-file-invoice-dollar"/>
                             </div>
-                            <span className={`card__num ${((totalExpenses + totalOtherExpenses) + totalProfit) > 0 ? 'green' : 'red'}`}>{formatPrice((totalExpenses + totalOtherExpenses) + totalProfit)} сум</span>
+                            <span
+                                className={`card__num ${((totalExpenses + totalOtherExpenses) + totalProfit) > 0 ? 'green' : 'red'}`}>{formatPrice((totalExpenses + totalOtherExpenses) + totalProfit)} сум</span>
                         </div>
                         <div className='card'>
                             <div className='card__titles'>
                                 <h3 className='title'>Фойда:</h3>
                                 <i className="fa-solid fa-money-bill-transfer"/>
                             </div>
-                            <span className='card__num green'>+{ formatPrice(totalProfit) } сум</span>
+                            <span className='card__num green'>+{formatPrice(totalProfit)} сум</span>
                         </div>
                         <div className='card'>
                             <div className='card__titles'>
                                 <h3 className='title'>Харажатлар:</h3>
                                 <i className="fa-solid fa-money-bill-trend-up"/>
                             </div>
-                            <span className='card__num red'>{ formatPrice(totalExpenses) } сум</span>
+                            <span className='card__num red'>{formatPrice(totalExpenses)} сум</span>
                         </div>
                         <div className='card'>
                             <div className='card__titles'>
                                 <h3 className='title'>Бошка харажатлар:</h3>
                                 <i className="fa-solid fa-chart-line"/>
                             </div>
-                            <span className='card__num'>{ formatPrice(totalOtherExpenses) } сум</span>
+                            <span className='card__num'>{formatPrice(totalOtherExpenses)} сум</span>
                         </div>
+                    </div>
+                    <div className="content__tabs center mb1">
+                        <Segmented
+                            size={'large'}
+                            options={['Хаммаси', 'Оила', 'Ишхона', 'Ходимлар']}
+                            value={tab}
+                            onChange={changeTab}
+                        />
                     </div>
                     <Tables
                         data={data}
@@ -306,7 +329,7 @@ const Price = () => {
                     layout='vertical'
                     validateMessages={validateMessages}
                     form={form}
-                    initialValues={{ expense: true }}
+                    initialValues={{ expense: true, category: 'Ишхона' }}
                 >
                     <Form.Item
                         name='expense'
@@ -327,7 +350,7 @@ const Price = () => {
                         label="Харажат номи"
                         rules={[{ required: true }]}
                     >
-                        <Input placeholder='Харажат'/>
+                        <Input placeholder='Харажат номи'/>
                     </Form.Item>
                     <Form.Item
                         name='money'
@@ -335,6 +358,23 @@ const Price = () => {
                         rules={[{ required: true }]}
                     >
                         <Input placeholder='Нарх' type='number'/>
+                    </Form.Item>
+                    <Form.Item
+                        name='category'
+                        label="Категория"
+                        rules={[{ required: true }]}
+                    >
+                        <Select size="large" placeholder="Танланг">
+                            <Select.Option value={'Оила'}>
+                                Оила
+                            </Select.Option>
+                            <Select.Option value={'Ишхона'}>
+                                Ишхона
+                            </Select.Option>
+                            <Select.Option value={'Ходимлар'}>
+                                Ходимлар
+                            </Select.Option>
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         name='description'

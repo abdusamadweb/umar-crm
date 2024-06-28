@@ -8,6 +8,7 @@ import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
 import Calculator from "../../components/calculator/Calculator.jsx";
+import Tables from "../../components/tables/Tables.jsx";
 
 const Other = () => {
 
@@ -17,14 +18,24 @@ const Other = () => {
     const [loading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
+    const [search, setSearch] = useState('')
+
+    const [fromDate, setFromDate] = useState(new Date())
+    const [toDate, setToDate] = useState(new Date())
+
 
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get('other-expenses')
+        const eSearch = encodeURIComponent(search)
+        const url = search !== ''
+            ? `other-expenses?timestamps&where[name][like]=${eSearch}`
+            : `other-expenses?timestamps`
+
+        const { data } = await $api.get(url)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['other-expenses'],
+        ['other-expenses', search],
         fetchData,
         {
             keepPreviousData: true,
@@ -180,7 +191,15 @@ const Other = () => {
                 />
                 <div className="content">
                     <h3 className="content__title fw600 mb2">Хаммаси болиб: <span>{ formatPrice(totalExpenses) }</span> сум</h3>
-                    <Table columns={columns} dataSource={data} />
+                    <Tables
+                        data={data}
+                        columns={columns}
+                        setSearch={setSearch}
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        setFromDate={setFromDate}
+                        setToDate={setToDate}
+                    />
                 </div>
             </div>
             <Modal

@@ -19,7 +19,7 @@ const Auth = () => {
             sessionStorage.setItem('token', TOKEN)
 
             toast.success('Хуш келибсиз!')
-            setTimeout(() => navigate('/'), 1500)
+            setTimeout(() => navigate('/money-manage'), 1500)
         } else {
             toast.error('Хато!')
             setLoading(false)
