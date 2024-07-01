@@ -13,6 +13,7 @@ const { Option } = Select
 const Workers = () => {
 
     const [form] = Form.useForm()
+    const [formMoney] = Form.useForm()
 
     const [modal, setModal] = useState('close')
     const [loading, setLoading] = useState(false)
@@ -86,6 +87,88 @@ const Workers = () => {
     })
 
 
+    // clear
+    const { mutate: clearItem } = useMutation({
+        mutationFn: () => {
+            const item = {
+                ...selectedItem,
+                id: null,
+                category: selectedItem.category.id,
+                debt: 0,
+            }
+            return addOrEdit('workers', item, selectedItem?.id)
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Очирилди!')
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+        }
+    })
+
+
+    // add money
+    const { mutate: addMoneyMutate } = useMutation({
+        mutationFn: (values) => {
+            setLoading(true)
+
+            const item = {
+                ...selectedItem,
+                id: null,
+                category: selectedItem.category.id,
+                debt: selectedItem.debt ? selectedItem.debt + (+values.debt) : +values.debt,
+            }
+            return addOrEdit('workers', item, selectedItem?.id)
+        },
+        onSuccess: async () => {
+            await refetch()
+            toast.success('Кошилди!')
+
+            setModal('close')
+            setSelectedItem(null)
+            setLoading(false)
+            formMoney.resetFields()
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+            setLoading(false)
+        }
+    })
+
+    // add money to money-management
+    const { mutate: addMoneyManage } = useMutation({
+        mutationFn: (values) => {
+            setLoading(true)
+
+            const item = {
+                name: selectedItem.name + ' - пул',
+                category: 'Ходимлар',
+                money: +values.debt,
+                date: new Date(),
+                expense: true,
+            }
+            return addOrEdit('expenses', item)
+        },
+        onSuccess: async () => {
+            toast.success('Кошилди!')
+
+            setModal('close')
+            setSelectedItem(null)
+            setLoading(false)
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+            setLoading(false)
+        }
+    })
+
+    const addMoney = (values) => {
+        addMoneyMutate(values)
+        addMoneyManage(values)
+    }
+
+
     // form
     useEffect(() => {
         if (selectedItem) {
@@ -112,13 +195,22 @@ const Workers = () => {
             title: 'Ф.И.О',
             dataIndex: 'name',
             key: 'name',
-            render: (_, { name }) => <span>{ name }</span>,
+            render: (_, item) => <button onClick={() => {
+                setModal('money')
+                setSelectedItem(item)
+            }}>{ item.name }</button>,
+        },
+        {
+            title: 'Карзи',
+            dataIndex: 'debt',
+            key: 'debt',
+            render: (_, { debt }) => <span className='red fw500'>-{ formatPrice(debt || 0) } сум</span>,
         },
         {
             title: 'Телефон',
             dataIndex: 'phone',
             key: 'phone',
-            render: (_, { phone }) => <span>{ formatPhone(phone) || '_' }</span>,
+            render: (_, { phone }) => <a href={`tel:${phone}`}>{ formatPhone(phone) || '_' }</a>,
         },
         {
             title: 'Йоши',
@@ -180,6 +272,18 @@ const Workers = () => {
                             <i className="fa-regular fa-trash-can"/>
                         </button>
                     </Popconfirm>
+                    <Popconfirm
+                        title="Карзни тозалаш?"
+                        description=' '
+                        okText="Ха"
+                        cancelText="Йок"
+                        placement='topRight'
+                        onConfirm={() => clearItem(item)}
+                    >
+                        <button className='actions__btn' onClick={() => setSelectedItem(item)}>
+                            <i className="fa-solid fa-broom"/>
+                        </button>
+                    </Popconfirm>
                 </div>
             ),
         },
@@ -208,7 +312,7 @@ const Workers = () => {
             <Modal
                 className='main-modal'
                 title={modal === 'add' ? "Кошиш" : "Озгартириш"}
-                open={modal !== 'close'}
+                open={modal !== 'close' && modal !== 'money'}
                 onCancel={() => {
                     setModal('close')
                     setSelectedItem(null)
@@ -268,6 +372,32 @@ const Workers = () => {
                         label="Турар жойи"
                     >
                         <Input.TextArea placeholder='Турар жойи' />
+                    </Form.Item>
+                    <div className='end mt1'>
+                        <Button type="primary" htmlType="submit" size='large' loading={loading}>
+                            Тасдиклаш
+                        </Button>
+                    </div>
+                </Form>
+            </Modal>
+            <Modal
+                className='main-modal'
+                title="Харажат кошиш"
+                open={modal === 'money'}
+                onCancel={() => setModal('close')}
+            >
+                <Form
+                    form={formMoney}
+                    onFinish={addMoney}
+                    layout='vertical'
+                    validateMessages={validateMessages}
+                >
+                    <Form.Item
+                        name='debt'
+                        label="Пул кошиш"
+                        rules={[{ required: true }]}
+                    >
+                        <Input placeholder='Пул кошиш' type='number' suffix={'сум'} />
                     </Form.Item>
                     <div className='end mt1'>
                         <Button type="primary" htmlType="submit" size='large' loading={loading}>

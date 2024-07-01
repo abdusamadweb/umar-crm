@@ -329,7 +329,7 @@ const Price = () => {
                     layout='vertical'
                     validateMessages={validateMessages}
                     form={form}
-                    initialValues={{ expense: true, category: 'Ишхона' }}
+                    initialValues={{ expense: true }}
                 >
                     <Form.Item
                         name='expense'
