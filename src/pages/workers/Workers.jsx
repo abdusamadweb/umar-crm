@@ -195,7 +195,7 @@ const Workers = () => {
             title: 'Ф.И.О',
             dataIndex: 'name',
             key: 'name',
-            render: (_, item) => <button onClick={() => {
+            render: (_, item) => <button className='fw500 txt' onClick={() => {
                 setModal('money')
                 setSelectedItem(item)
             }}>{ item.name }</button>,
