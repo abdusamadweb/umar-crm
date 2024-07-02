@@ -1,7 +1,7 @@
 import './Works.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Segmented, Select, Table, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Select, Table, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import {Link} from "react-router-dom";
 import $api from "../../api/apiConfig.js";
@@ -17,21 +17,14 @@ const Works = () => {
     const [loading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
-    const [value, setValue] = useState(localStorage.getItem('work') || 'Абшивка')
-
-    const changeWork = (val) => {
-        setValue(val)
-        localStorage.setItem('work', val)
-    }
-
 
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get(`/works?whereRelation[category][name]=${value}`)
+        const { data } = await $api.get(`/works`)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['works', value],
+        ['works'],
         fetchData,
         {
             keepPreviousData: true,
@@ -229,15 +222,24 @@ const Works = () => {
             key: 'actions',
             render: (_, item) => (
                 <div className="actions">
-                    {/*<button className='actions__btn view' onClick={() => setModal('view')}>*/}
-                    {/*    <i className="fa-solid fa-eye"/>*/}
-                    {/*</button>*/}
                     <button className='actions__btn edit' onClick={() => {
                         setModal('edit')
                         setSelectedItem(item)
                     }}>
                         <i className="fa-regular fa-pen-to-square"/>
                     </button>
+                    <Popconfirm
+                        title="Очиришни хохлайсизми?"
+                        description=' '
+                        okText="Ха"
+                        cancelText="Йок"
+                        placement='topRight'
+                        onConfirm={() => archiveItem(item)}
+                    >
+                        <button className='actions__btn delete' onClick={() => deleteItem(item.id)}>
+                            <i className="fa-regular fa-pen-to-square"/>
+                        </button>
+                    </Popconfirm>
                     <Popconfirm
                         title="Архивлашни хохлайсизми?"
                         description=' '
@@ -276,14 +278,6 @@ const Works = () => {
                         }
                     />
                     <div className="content">
-                        <div className="content__tabs center mb1">
-                            <Segmented
-                                size={'large'}
-                                options={['Абшивка', 'Карказ', 'Тикув']}
-                                value={value}
-                                onChange={changeWork}
-                            />
-                        </div>
                         <Table
                             columns={columns}
                             dataSource={data}
