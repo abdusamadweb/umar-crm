@@ -276,7 +276,7 @@ const Price = () => {
                         </div>
                         <div className='card'>
                             <div className='card__titles'>
-                                <h3 className='title'>Фойда:</h3>
+                                <h3 className='title'>Тушум:</h3>
                                 <i className="fa-solid fa-money-bill-transfer"/>
                             </div>
                             <span className='card__num green'>+{formatPrice(totalProfit)} сум</span>
