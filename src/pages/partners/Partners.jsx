@@ -138,6 +138,7 @@ const Partners = () => {
                 worker: values.worker.id,
                 mebelName: values.mebelName,
                 money: values.money,
+                description: values.description,
                 createdAt: values.createdAt,
                 archivedAt: new Date(),
                 material: values.material,
@@ -209,6 +210,12 @@ const Partners = () => {
             render: (_, { money }) => <span>{ money ? `${formatPrice(money)} сум` : 'ишбай' }</span>,
         },
         {
+            title: 'Описание',
+            dataIndex: 'description',
+            key: 'description',
+            render: (_, { description }) => <span>{ description }</span>,
+        },
+        {
             className: 'fw500',
             title: 'Койилган санаси',
             dataIndex: 'createdAt',
@@ -243,6 +250,18 @@ const Partners = () => {
                     }}>
                         <i className="fa-regular fa-pen-to-square"/>
                     </button>
+                    <Popconfirm
+                        title="Очиришни хохлайсизми?"
+                        description=' '
+                        okText="Ха"
+                        cancelText="Йок"
+                        placement='topRight'
+                        onConfirm={() => deleteItem(item.id)}
+                    >
+                        <button className='actions__btn delete'>
+                            <i className="fa-regular fa-trash-can"/>
+                        </button>
+                    </Popconfirm>
                     <Popconfirm
                         title="Архивлашни хохлайсизми?"
                         description=' '
@@ -341,6 +360,12 @@ const Partners = () => {
                         rules={[{required: true}]}
                     >
                         <Input placeholder='Иш хаки' type='number'/>
+                    </Form.Item>
+                    <Form.Item
+                        name='description'
+                        label="Описание"
+                    >
+                        <Input.TextArea placeholder='Описание'/>
                     </Form.Item>
                     <div className='grid' style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px 1rem' }}>
                         <Form.Item

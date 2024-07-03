@@ -36,6 +36,10 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             name: 'Бошка харажатлар',
             link: '/other'
         },
+        {
+            name: 'Қарзлар',
+            link: '/debt'
+        },
     ]
 
 

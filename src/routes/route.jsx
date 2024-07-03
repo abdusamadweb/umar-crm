@@ -12,6 +12,7 @@ import Partners from "../pages/partners/Partners.jsx";
 import PartnersArchive from "../pages/partners/PartnersArchive.jsx";
 import Davomat from "../pages/davomat/Davomat.jsx";
 import Products from "../pages/products/Products.jsx";
+import Debt from "../pages/debt/Debt.jsx";
 
 
 // Non-protect-able routes
@@ -32,6 +33,7 @@ const protectedRoutes = [
     { path: '/products', element: <Products /> },
     { path: '/money-manage', element: <Price /> },
     { path: '/other', element: <Other /> },
+    { path: '/debt', element: <Debt /> },
 ]
 
 
