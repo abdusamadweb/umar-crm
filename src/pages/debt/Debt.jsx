@@ -7,6 +7,7 @@ import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
+import Card from "../../components/card/Card.jsx";
 
 const Debt = () => {
 
@@ -26,7 +27,7 @@ const Debt = () => {
     const fetchData = async () => {
         const eSearch = encodeURIComponent(search)
         const url = search !== ''
-            ? `debt?timestamps&where[where][like]=${eSearch}`
+            ? `debt?timestamps&where[name][like]=${eSearch}`
             : `debt?timestamps`
 
         const { data } = await $api.get(url)
@@ -220,20 +221,16 @@ const Debt = () => {
                 />
                 <div className="content">
                     <div className="cards">
-                        <div className='card'>
-                            <div className='card__titles'>
-                                <h3 className='title'>Қарзлар берилган:</h3>
-                                <i className="fa-solid fa-money-bill-transfer"/>
-                            </div>
-                            <span className='card__num green'>+{formatPrice(totalProfit)} $</span>
-                        </div>
-                        <div className='card'>
-                            <div className='card__titles'>
-                                <h3 className='title'>Қарз олинган:</h3>
-                                <i className="fa-solid fa-money-bill-trend-up"/>
-                            </div>
-                            <span className='card__num red'>{formatPrice(totalExpenses)} $</span>
-                        </div>
+                        <Card
+                            title='Қарзлар берилган'
+                            value={totalProfit}
+                            usd={true}
+                        />
+                        <Card
+                            title='Қарз олинган'
+                            value={totalExpenses}
+                            usd={true}
+                        />
                     </div>
                     <Tables
                         data={data}

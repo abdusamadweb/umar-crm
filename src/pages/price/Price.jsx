@@ -9,6 +9,7 @@ import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
 import Calculator from "../../components/calculator/Calculator.jsx";
 import Tables from "../../components/tables/Tables.jsx";
+import Card from "../../components/card/Card.jsx";
 
 const Price = () => {
 
@@ -266,35 +267,25 @@ const Price = () => {
                 />
                 <div className="content">
                     <div className="cards">
-                        <div className='card'>
-                            <div className='card__titles'>
-                                <h3 className='title'>Хаммаси болиб:</h3>
-                                <i className="fa-solid fa-file-invoice-dollar"/>
-                            </div>
-                            <span
-                                className={`card__num ${((totalExpenses + totalOtherExpenses) + totalProfit) > 0 ? 'green' : 'red'}`}>{formatPrice((totalExpenses + totalOtherExpenses) + totalProfit)} сум</span>
-                        </div>
-                        <div className='card'>
-                            <div className='card__titles'>
-                                <h3 className='title'>Тушум:</h3>
-                                <i className="fa-solid fa-money-bill-transfer"/>
-                            </div>
-                            <span className='card__num green'>+{formatPrice(totalProfit)} сум</span>
-                        </div>
-                        <div className='card'>
-                            <div className='card__titles'>
-                                <h3 className='title'>Харажатлар:</h3>
-                                <i className="fa-solid fa-money-bill-trend-up"/>
-                            </div>
-                            <span className='card__num red'>{formatPrice(totalExpenses)} сум</span>
-                        </div>
-                        <div className='card'>
-                            <div className='card__titles'>
-                                <h3 className='title'>Бошка харажатлар:</h3>
-                                <i className="fa-solid fa-chart-line"/>
-                            </div>
-                            <span className='card__num'>{formatPrice(totalOtherExpenses)} сум</span>
-                        </div>
+                        <Card
+                            title='Хаммаси болиб'
+                            value={(totalExpenses + totalOtherExpenses) + totalProfit}
+                            icon={<i className="fa-solid fa-file-invoice-dollar"/>}
+                        />
+                        <Card
+                            title='Тушум'
+                            value={totalProfit}
+                        />
+                        <Card
+                            title='Харажатлар'
+                            value={totalExpenses}
+                            icon={<i className="fa-solid fa-money-bill-trend-up"/>}
+                        />
+                        <Card
+                            title='Бошка харажатлар'
+                            value={totalOtherExpenses}
+                            icon={<i className="fa-solid fa-chart-line"/>}
+                        />
                     </div>
                     <div className="content__tabs center mb1">
                         <Segmented
