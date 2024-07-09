@@ -13,6 +13,7 @@ import PartnersArchive from "../pages/partners/PartnersArchive.jsx";
 import Davomat from "../pages/davomat/Davomat.jsx";
 import Products from "../pages/products/Products.jsx";
 import Debt from "../pages/debt/Debt.jsx";
+import Xarajatlar from "../pages/xarajatlar/Xarajatlar.jsx";
 
 
 // Non-protect-able routes
@@ -24,15 +25,16 @@ const publicRoutes = [
 // Protect-able routes
 const protectedRoutes = [
     { path: '/', element: <Home /> },
-    { path: '/works', element: <Works /> },
-    { path: '/works/archive', element: <WorksArchive /> },
     { path: '/partners', element: <Partners /> },
     { path: '/partners/archive', element: <PartnersArchive /> },
     { path: '/workers', element: <Workers /> },
-    { path: '/davomat', element: <Davomat /> },
-    { path: '/products', element: <Products /> },
+    { path: '/xarajatlar', element: <Xarajatlar /> },
     { path: '/money-manage', element: <Price /> },
     { path: '/other', element: <Other /> },
+    { path: '/works', element: <Works /> },
+    { path: '/works/archive', element: <WorksArchive /> },
+    { path: '/davomat', element: <Davomat /> },
+    { path: '/products', element: <Products /> },
     { path: '/debt', element: <Debt /> },
 ]
 

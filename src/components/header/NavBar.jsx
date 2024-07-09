@@ -9,10 +9,6 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             link: '/'
         },
         {
-            name: 'Килинган ишлар',
-            link: '/works'
-        },
-        {
             name: 'Доконлар',
             link: '/partners'
         },
@@ -21,12 +17,8 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             link: '/workers'
         },
         {
-            name: 'Давомат',
-            link: '/davomat'
-        },
-        {
-            name: 'Моллар',
-            link: '/products'
+            name: 'Харажатлар',
+            link: '/xarajatlar'
         },
         {
             name: 'Пул менежменти',
@@ -35,6 +27,18 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
         {
             name: 'Бошка харажатлар',
             link: '/other'
+        },
+        {
+            name: 'Килинган ишлар',
+            link: '/works'
+        },
+        {
+            name: 'Давомат',
+            link: '/davomat'
+        },
+        {
+            name: 'Моллар',
+            link: '/products'
         },
         {
             name: 'Қарзлар',
