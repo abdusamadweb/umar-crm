@@ -1,6 +1,6 @@
 import CountUp from 'react-countup'
 
-const Card = ({ title, value, usd, icon }) => {
+const Card = ({ title, value, txt, icon }) => {
 
     return (
         <div className='card'>
@@ -11,7 +11,7 @@ const Card = ({ title, value, usd, icon }) => {
                 }
             </div>
             <div className={`card__num ${value > -1 ? 'green' : 'red'}`}>
-                <CountUp end={value} separator=" " /> { usd ? '$' : 'сум' }
+                { value > 0 && '+' }<CountUp end={value} separator=" " /> { txt || 'сум' }
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import './Partners.scss'
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
 import {Button, Form, Input, Modal, Popconfirm, Select, Table, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
@@ -9,6 +9,7 @@ import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
 import Tables from "../../components/tables/Tables.jsx";
+import Card from "../../components/card/Card.jsx";
 
 const Partners = () => {
 
@@ -164,6 +165,21 @@ const Partners = () => {
     }
 
 
+    // totals
+    const [totals, setTotals] = useState({ tWorkers: 0, tWorks: 0, tExpenses: 0 })
+
+    const calcAll = useMemo(() => {
+        const tMebels = data?.length
+        const tMoney = data?.reduce((sum, i) => sum + (i.money || 0), 0)
+
+        return { tMebels, tMoney }
+    }, [data])
+
+    useEffect(() => {
+        setTotals(calcAll)
+    }, [calcAll])
+
+
     // form
     useEffect(() => {
         if (selectedItem) {
@@ -283,9 +299,9 @@ const Partners = () => {
 
 
     return (
-        <div className='works page'>
+        <div className='partners page'>
             <div className="container">
-                <div className="workers__inner">
+                <div className="partners__inner">
                     <Title
                         title='Доконлар'
                         btn='Кошиш'
@@ -300,6 +316,10 @@ const Partners = () => {
                         }
                     />
                     <div className="content">
+                        <div className="cards">
+                            <Card title='Общий сумма' value={totals.tMoney} />
+                            <Card title='Моллар сони' value={totals.tMebels} txt='та' />
+                        </div>
                         <Tables
                             data={data}
                             columns={columns}

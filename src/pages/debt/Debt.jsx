@@ -224,12 +224,12 @@ const Debt = () => {
                         <Card
                             title='Қарзлар берилган'
                             value={totalProfit}
-                            usd={true}
+                            usd='$'
                         />
                         <Card
                             title='Қарз олинган'
                             value={totalExpenses}
-                            usd={true}
+                            usd="$"
                         />
                     </div>
                     <Tables
