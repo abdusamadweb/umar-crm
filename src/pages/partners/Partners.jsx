@@ -166,7 +166,7 @@ const Partners = () => {
 
 
     // totals
-    const [totals, setTotals] = useState({ tWorkers: 0, tWorks: 0, tExpenses: 0 })
+    const [totals, setTotals] = useState({ tMebels: 0, tMoney: 0 })
 
     const calcAll = useMemo(() => {
         const tMebels = data?.length

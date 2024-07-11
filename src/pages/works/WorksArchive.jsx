@@ -134,7 +134,7 @@ const WorksArchive = () => {
                         navigate={true}
                     />
                     <div className="content">
-                        <div className="content__tabs center mb1">
+                        <div className="tabs center mb1">
                             <Segmented
                                 size={'large'}
                                 options={['Абшивка', 'Карказ', 'Тикув']}

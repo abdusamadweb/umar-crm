@@ -198,18 +198,18 @@ const Price = () => {
             render: (_, { name }) => <span>{ name }</span>,
         },
         {
-            title: 'Описание',
-            dataIndex: 'description',
-            key: 'description',
-            width: '40%',
-            render: (_, { description }) => <span>{ description || '__' }</span>,
-        },
-        {
             className: 'fw600',
             title: 'Харажат',
             dataIndex: 'money',
             key: 'money',
             render: (_, { money, expense }) => <span className={expense ? 'red' : 'green'}>{ expense ? '-' : '+' }{ formatPrice(money) } сум</span>,
+        },
+        {
+            title: 'Описание',
+            dataIndex: 'description',
+            key: 'description',
+            width: '40%',
+            render: (_, { description }) => <span>{ description || '__' }</span>,
         },
         {
             className: 'fw500',
@@ -287,7 +287,7 @@ const Price = () => {
                             icon={<i className="fa-solid fa-chart-line"/>}
                         />
                     </div>
-                    <div className="content__tabs center mb1">
+                    <div className="tabs center mb1">
                         <Segmented
                             size={'large'}
                             options={['Хаммаси', 'Оила', 'Ишхона', 'Ходимлар']}
