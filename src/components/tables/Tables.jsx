@@ -16,7 +16,8 @@ const Tables = ({ data, columns, setSearch, fromDate, toDate, setFromDate, setTo
             <Table
                 columns={columns}
                 dataSource={data}
-                scroll={{ x: 550 }}
+                pagination={{ pageSize: 20 }}
+                scroll={{ x: 550, y: 700 }}
             />
         </div>
     );

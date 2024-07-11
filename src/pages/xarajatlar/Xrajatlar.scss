@@ -3,8 +3,11 @@
 .xarajatlar {
 
   .cards {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
 
+    @include breakpoint-down(950px) {
+      grid-template-columns: 1fr 1fr;
+    }
     @include breakpoint-down(680px) {
       grid-template-columns: 1fr;
     }
