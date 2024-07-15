@@ -37,7 +37,7 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             link: '/davomat'
         },
         {
-            name: 'Моллар',
+            name: 'Хисоб китоб',
             link: '/products'
         },
         {

@@ -112,7 +112,7 @@ const Xarajatlar = () => {
     const [totals, setTotals] = useState({ tExpenses: 0 })
 
     const calcAll = useMemo(() => {
-        const tExpenses = data?.reduce((sum, i) => sum + (i.money || 0), 0)
+        const tExpenses = data?.reduce((sum, i) => sum - (i.money || 0), 0)
 
         return { tExpenses }
     }, [data])

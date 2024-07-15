@@ -119,6 +119,18 @@ const Products = () => {
             render: (_, { name }) => <span>{ name }</span>,
         },
         {
+            title: 'Фойда',
+            dataIndex: 'profit',
+            key: 'profit',
+            render: (_, { profit }) => <span className='green'>+{ profit } сум</span>,
+        },
+        {
+            title: 'Обший расход',
+            dataIndex: 'total',
+            key: 'total',
+            render: (_, { total }) => <span className='red'>-{ total } сум</span>,
+        },
+        {
             title: 'Курс $',
             dataIndex: 'dollar',
             key: 'dollar',
@@ -136,12 +148,6 @@ const Products = () => {
             dataIndex: 'material',
             key: 'material',
             render: (_, { material }) => <span>{ material } $</span>,
-        },
-        {
-            title: 'Обший расход',
-            dataIndex: 'total',
-            key: 'total',
-            render: (_, { total }) => <span className='red'>-{ total } сум</span>,
         },
         {
             title: 'Амаллар',
