@@ -20,11 +20,11 @@ const Products = () => {
 
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get('other-expenses')
+        const { data } = await $api.get('products')
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['other-expenses'],
+        ['products'],
         fetchData,
         {
             keepPreviousData: true,
@@ -32,13 +32,20 @@ const Products = () => {
         }
     )
 
+    const keysToNotDisplay = ['locale', 'id']
+
+    let filteredKeys = []
+    if (selectedItem !== null) {
+        filteredKeys = Object.keys(selectedItem).filter(key => !keysToNotDisplay.includes(key));
+    }
+
 
     // add & edit
     const { mutate } = useMutation({
         mutationFn: (values) => {
             setLoading(true)
             return addOrEdit(
-                'other-expenses',
+                'products',
                 { ...values, date: selectedItem ? selectedItem.date : new Date() },
                 selectedItem?.id || false
             )
@@ -66,7 +73,7 @@ const Products = () => {
     // delete
     const { mutate: deleteItem } = useMutation({
         mutationFn: (id) => {
-            return deleteData('other-expenses', id)
+            return deleteData('products', id)
         },
         onSuccess: async () => {
             await refetch()
@@ -120,12 +127,14 @@ const Products = () => {
         },
         {
             title: 'Фойда',
+            className: 'fw500',
             dataIndex: 'profit',
             key: 'profit',
             render: (_, { profit }) => <span className='green'>+{ profit } сум</span>,
         },
         {
             title: 'Обший расход',
+            className: 'fw500',
             dataIndex: 'total',
             key: 'total',
             render: (_, { total }) => <span className='red'>-{ total } сум</span>,
@@ -199,14 +208,14 @@ const Products = () => {
                     <Table
                         columns={columns}
                         dataSource={data}
-                        scroll={{ x: 550 }}
+                        scroll={{x: 550}}
                     />
                 </div>
             </div>
             <Modal
                 className='main-modal'
                 title={modal === 'add' ? "Кошиш" : "Озгартириш"}
-                open={modal !== 'close' && modal !== 'calc'}
+                open={modal === 'add' || modal === 'edit'}
                 onCancel={() => {
                     setModal('close')
                     setSelectedItem(null)
@@ -238,6 +247,28 @@ const Products = () => {
                         </Button>
                     </div>
                 </Form>
+            </Modal>
+            <Modal
+                className='main-modal'
+                title='Харажати'
+                open={modal === 'show'}
+                onCancel={() => {
+                    setModal('close')
+                    setSelectedItem(null)
+                }}
+            >
+                <ul>
+                    {filteredKeys.map((key) => (
+                        <li key={key}>
+                            <p>{key}: {selectedItem[key]}</p>
+                        </li>
+                    ))}
+                </ul>
+                <div className='end mt1'>
+                    <Button type="primary" size='large' onClick={() => setModal('edit')}>
+                        Озгартириш
+                    </Button>
+                </div>
             </Modal>
         </div>
     );
