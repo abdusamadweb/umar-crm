@@ -28,14 +28,14 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             name: 'Бошка харажатлар',
             link: '/other'
         },
-        {
-            name: 'Килинган ишлар',
-            link: '/works'
-        },
-        {
-            name: 'Давомат',
-            link: '/davomat'
-        },
+        // {
+        //     name: 'Килинган ишлар',
+        //     link: '/works'
+        // },
+        // {
+        //     name: 'Давомат',
+        //     link: '/davomat'
+        // },
         {
             name: 'Хисоб китоб',
             link: '/products'

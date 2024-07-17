@@ -161,11 +161,10 @@ const Xarajatlar = () => {
             render: (_, { money }) => <span className='red fw500'>-{ formatPrice(money || 0) } сум</span>,
         },
         {
-            title: 'Описание',
-            dataIndex: 'description',
-            key: 'description',
-            width: '30%',
-            render: (_, { description }) => <span>{ description || '__' }</span>,
+            title: 'Охирги марта',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            render: (_, { created_at }) => <span>{ created_at || '__' }</span>,
         },
         {
             title: 'Амаллар',

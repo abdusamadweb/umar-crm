@@ -44,7 +44,7 @@
     transition: font-size 0.2s ease;
 
     &.opa {
-      font-size: 24px;
+      font-size: 28px;
       visibility: visible;
     }
 
@@ -89,8 +89,12 @@
       }
 
       &.left {
-        top: 4px;
+        top: 8px;
         left: 190px;
+
+        @include mobile {
+          top: 18px;
+        }
       }
     }
 

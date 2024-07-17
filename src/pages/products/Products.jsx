@@ -32,13 +32,6 @@ const Products = () => {
         }
     )
 
-    const keysToNotDisplay = ['locale', 'id']
-
-    let filteredKeys = []
-    if (selectedItem !== null) {
-        filteredKeys = Object.keys(selectedItem).filter(key => !keysToNotDisplay.includes(key));
-    }
-
 
     // add & edit
     const { mutate } = useMutation({
@@ -110,6 +103,23 @@ const Products = () => {
     }, [data])
 
 
+    // display data
+    const keysToNotDisplay = ['locale', 'id']
+
+    const filteredKeys = selectedItem !== null ? Object.keys(selectedItem).filter(key => !keysToNotDisplay.includes(key)) : []
+
+    const formatValue = (key, value) => {
+        if (key === 'date') {
+            return value.slice(0, 10);
+        } else if (key === 'dollar') {
+            return `${value} $`;
+        } else if (key.includes('Metr')) {
+            return `${value} метр`;
+        }
+        return value;
+    }
+
+
     // table
     const columns = [
         {
@@ -130,14 +140,14 @@ const Products = () => {
             className: 'fw500',
             dataIndex: 'profit',
             key: 'profit',
-            render: (_, { profit }) => <span className='green'>+{ profit } сум</span>,
+            render: (_, { profit }) => <span className='green'>+{ profit || 0 } сум</span>,
         },
         {
             title: 'Обший расход',
             className: 'fw500',
             dataIndex: 'total',
             key: 'total',
-            render: (_, { total }) => <span className='red'>-{ total } сум</span>,
+            render: (_, { total }) => <span className='red'>-{ total || 0 } сум</span>,
         },
         {
             title: 'Курс $',
@@ -195,7 +205,7 @@ const Products = () => {
 
 
     return (
-        <div className="other page">
+        <div className="products page">
             <Calculator modal={modal} setModal={setModal} />
             <div className="container">
                 <Title
@@ -257,10 +267,12 @@ const Products = () => {
                     setSelectedItem(null)
                 }}
             >
-                <ul>
+                <ul className='modal-list flex-column'>
                     {filteredKeys.map((key) => (
-                        <li key={key}>
-                            <p>{key}: {selectedItem[key]}</p>
+                        <li className='item' key={key}>
+                            <span className='item__label'>{ key }:</span>
+                            <span className='item__dots'/>
+                            <span className='item__value'>{ formatValue(key, selectedItem[key]) }</span>
                         </li>
                     ))}
                 </ul>
@@ -275,3 +287,14 @@ const Products = () => {
 };
 
 export default Products
+
+
+function Label({label, value}) {
+
+    return (
+        <li className='item'>
+            <span className='item__label'>{ label }</span>
+            <span className='item__value'>{ value }</span>
+        </li>
+    )
+}

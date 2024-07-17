@@ -10,36 +10,6 @@
     @include mobile {
       padding: 10px;
     }
-
-    .search {
-      @include mobile {
-        gap: 10px;
-
-        input {
-          font-size: 14px;
-          padding-block: 5px;
-        }
-
-        .ant-btn {
-          width: 32px;
-          height: 32px;
-
-          .anticon {
-            font-size: 15px;
-          }
-        }
-
-        .btn {
-          width: 32px;
-          height: 32px;
-          padding: 2px;
-
-          i {
-            font-size: 14px;
-          }
-        }
-      }
-    }
   }
 }
 

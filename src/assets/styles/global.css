@@ -132,6 +132,7 @@ i {
    flex-flow: nowrap;
 }
 .flex-column {
+   display: flex;
    flex-flow: column;
 }
 .center {

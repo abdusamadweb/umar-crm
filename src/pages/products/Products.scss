@@ -3,3 +3,28 @@
 .products {
 
 }
+
+.modal-list {
+  gap: 10px;
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    &__label {
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    &__dots {
+      flex: 1;
+      border-bottom: 1px dotted #ccc;
+    }
+
+    &__value {
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+}
