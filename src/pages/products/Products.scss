@@ -4,6 +4,22 @@
 
 }
 
+.mini-cards {
+  gap: 5px;
+  margin-bottom: 1rem;
+
+  .card {
+    display: flex;
+    font-weight: 500;
+    font-size: 16px;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
 .modal-list {
   gap: 10px;
 
@@ -25,6 +41,55 @@
     &__value {
       font-weight: 500;
       font-size: 16px;
+    }
+  }
+}
+
+.main-modal {
+  
+  &.add-edit {
+    .ant-modal-title {
+      margin-bottom: 10px !important;
+    }
+
+    .ant-form {
+
+      &-item {
+        margin-bottom: 8px;
+
+        &-label {
+          padding-bottom: 5px;
+        }
+      }
+
+      .ant-input {
+        padding: 5px 12px;
+      }
+    }
+  }
+
+  .ant-form-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 10px;
+  }
+
+  .add-btn {
+    width: 100%;
+    display: grid;
+    place-items: center;
+    padding: 8px 1rem;
+    margin-top: 10px;
+    border-radius: 15px;
+    background: #f1f5fd;
+
+    &:hover {
+      background: #dbebfd;
+    }
+
+    i {
+      font-size: 22px;
+      color: $txt-color;
     }
   }
 }

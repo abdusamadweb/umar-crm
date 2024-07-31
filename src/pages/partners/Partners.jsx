@@ -203,10 +203,10 @@ const Partners = () => {
             render: (_, __, index) => <span>{ index+1 }</span>,
         },
         {
-            title: 'Ким киганлиги',
-            dataIndex: 'worker',
-            key: 'worker',
-            render: (_, { worker }) => <span>{ worker.name }</span>,
+            title: 'Мебел номи',
+            dataIndex: 'mebelName',
+            key: 'mebelName',
+            render: (_, { mebelName }) => <span>{ mebelName || '__' }</span>,
         },
         {
             title: 'Докон',
@@ -214,10 +214,10 @@ const Partners = () => {
             key: 'where'
         },
         {
-            title: 'Мебел номи',
-            dataIndex: 'mebelName',
-            key: 'mebelName',
-            render: (_, { mebelName }) => <span>{ mebelName || '__' }</span>,
+            title: 'Ким киганлиги',
+            dataIndex: 'worker',
+            key: 'worker',
+            render: (_, { worker }) => <span>{ worker.name }</span>,
         },
         {
             title: 'Канчага койилганлиги',

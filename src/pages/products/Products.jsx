@@ -1,7 +1,7 @@
 import './Products.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Table} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Select, Table} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
@@ -21,11 +21,26 @@ const Products = () => {
     // fetch data
     const fetchData = async () => {
         const { data } = await $api.get('products')
-        return data.reverse()
+        return data?.slice(1).reverse()
     }
     const { data, refetch } = useQuery(
         ['products'],
         fetchData,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
+
+
+    // fetch first data
+    const fetchData1 = async () => {
+        const { data } = await $api.get('products')
+        return data?.slice(0, 1)
+    }
+    const { data: first } = useQuery(
+        ['products1'],
+        fetchData1,
         {
             keepPreviousData: true,
             refetchOnWindowFocus: false
@@ -104,20 +119,36 @@ const Products = () => {
 
 
     // display data
-    const keysToNotDisplay = ['locale', 'id']
+    const keysToNotDisplay = ['locale', 'id', 'dollar', 'total', 'profit']
+    const keysToNotDisplayForm = ['locale', 'id', 'total', 'profit', 'date']
 
     const filteredKeys = selectedItem !== null ? Object.keys(selectedItem).filter(key => !keysToNotDisplay.includes(key)) : []
+    const filteredKeysForm = selectedItem !== null ? Object.keys(selectedItem).filter(key => !keysToNotDisplayForm.includes(key)) : []
 
     const formatValue = (key, value) => {
         if (key === 'date') {
-            return value.slice(0, 10);
-        } else if (key === 'dollar') {
-            return `${value} $`;
+            return value.slice(0, 10)
         } else if (key.includes('Metr')) {
-            return `${value} метр`;
+            return `${value} метр`
+        } else if (key === 'name' || key === 'material') {
+            return value
         }
-        return value;
+        return value + ' $'
     }
+
+    // const [firstData, setFirstData] = useState({})
+    // useEffect(() => {
+    //     setFirstData(selectedItem !== null ? Object.keys(selectedItem).filter(key => !keysToNotDisplayForm.includes(key)) : [])
+    // }, [first, keysToNotDisplayForm, selectedItem])
+    // console.log(firstData)
+    //
+    // const [selects, setSelects] = useState([])
+    // const [counter, setCounter] = useState(0)
+    //
+    // const addSelect = () => {
+    //     setSelects([...selects, counter])
+    //     setCounter(counter + 1)
+    // }
 
 
     // table
@@ -133,21 +164,27 @@ const Products = () => {
             title: 'Номи',
             dataIndex: 'name',
             key: 'name',
-            render: (_, { name }) => <span>{ name }</span>,
+        },
+        {
+            title: 'Нархи',
+            className: 'fw500',
+            dataIndex: 'price',
+            key: 'price',
+            render: (_, { price, dollar }) => <span>{ formatPrice(price*dollar || 0) } сум</span>,
         },
         {
             title: 'Фойда',
             className: 'fw500',
             dataIndex: 'profit',
             key: 'profit',
-            render: (_, { profit }) => <span className='green'>+{ profit || 0 } сум</span>,
+            render: (_, { profit }) => <span className='green'>+{ formatPrice(profit || 0) } сум</span>,
         },
         {
             title: 'Обший расход',
             className: 'fw500',
             dataIndex: 'total',
             key: 'total',
-            render: (_, { total }) => <span className='red'>-{ total || 0 } сум</span>,
+            render: (_, { total }) => <span className='red'>-{ formatPrice(total || 0) } сум</span>,
         },
         {
             title: 'Курс $',
@@ -166,7 +203,6 @@ const Products = () => {
             title: 'Материал',
             dataIndex: 'material',
             key: 'material',
-            render: (_, { material }) => <span>{ material } $</span>,
         },
         {
             title: 'Амаллар',
@@ -210,9 +246,6 @@ const Products = () => {
             <div className="container">
                 <Title
                     title='Моллар - хисоб китоби'
-                    btn='Кошиш'
-                    click={() => setModal('add')}
-                    icon={true}
                 />
                 <div className="content">
                     <Table
@@ -222,10 +255,65 @@ const Products = () => {
                     />
                 </div>
             </div>
+            {/*<Modal*/}
+            {/*    className='main-modal add-edit'*/}
+            {/*    title="Кошиш"*/}
+            {/*    open={modal === 'add'}*/}
+            {/*    onCancel={() => {*/}
+            {/*        setModal('close')*/}
+            {/*        setSelectedItem(null)*/}
+            {/*    }}*/}
+            {/*>*/}
+            {/*    <Form*/}
+            {/*        onFinish={onFormSubmit}*/}
+            {/*        layout='vertical'*/}
+            {/*        validateMessages={validateMessages}*/}
+            {/*        form={form}*/}
+            {/*    >*/}
+            {/*        <div className="ant-form-content">*/}
+            {/*            <Select*/}
+            {/*                showSearch*/}
+            {/*                placeholder="Танланг"*/}
+            {/*                optionFilterProp="children"*/}
+            {/*            >*/}
+            {/*                /!*{*!/*/}
+            {/*                /!*    firstData !== null ?*!/*/}
+            {/*                /!*        firstData?.map((key) => (*!/*/}
+            {/*                /!*            <Select.Option value={key} key={key}>*!/*/}
+            {/*                /!*                {key?.charAt(0).toUpperCase() + key.slice(1)}*!/*/}
+            {/*                /!*            </Select.Option>*!/*/}
+            {/*                /!*        )) : <p>Loading . . .</p>*!/*/}
+            {/*                /!*}*!/*/}
+            {/*            </Select>*/}
+            {/*            {selects?.map((selectId) => (*/}
+            {/*                <Select*/}
+            {/*                    key={selectId}*/}
+            {/*                    showSearch*/}
+            {/*                    placeholder="Танланг"*/}
+            {/*                    optionFilterProp="children"*/}
+            {/*                >*/}
+            {/*                    {firstData?.map((key) => (*/}
+            {/*                        <Select.Option value={key} key={key}>*/}
+            {/*                            {key?.charAt(0).toUpperCase() + key.slice(1)}*/}
+            {/*                        </Select.Option>*/}
+            {/*                    ))}*/}
+            {/*                </Select>*/}
+            {/*            ))}*/}
+            {/*        </div>*/}
+            {/*        <button className='add-btn' type='button' onClick={addSelect}>*/}
+            {/*            <i className="fa-solid fa-circle-plus"/>*/}
+            {/*        </button>*/}
+            {/*        <div className='end mt1'>*/}
+            {/*            <Button type="primary" htmlType="submit" size='large' loading={loading}>*/}
+            {/*                Тасдиклаш*/}
+            {/*            </Button>*/}
+            {/*        </div>*/}
+            {/*    </Form>*/}
+            {/*</Modal>*/}
             <Modal
-                className='main-modal'
-                title={modal === 'add' ? "Кошиш" : "Озгартириш"}
-                open={modal === 'add' || modal === 'edit'}
+                className='main-modal add-edit'
+                title="Озгартириш"
+                open={modal === 'edit'}
                 onCancel={() => {
                     setModal('close')
                     setSelectedItem(null)
@@ -237,20 +325,17 @@ const Products = () => {
                     validateMessages={validateMessages}
                     form={form}
                 >
-                    <Form.Item
-                        name='name'
-                        label="Харажат"
-                        rules={[{ required: true }]}
-                    >
-                        <Input placeholder='Харажат'/>
-                    </Form.Item>
-                    <Form.Item
-                        name='money'
-                        label="Нарх"
-                        rules={[{ required: true }]}
-                    >
-                        <Input placeholder='Нарх' type='number'/>
-                    </Form.Item>
+                    <div className='ant-form-content'>
+                        {filteredKeysForm.map((key) => (
+                            <Form.Item
+                                key={key}
+                                name={key}
+                                label={key?.charAt(0).toUpperCase() + key.slice(1)}
+                            >
+                                <Input placeholder={key?.charAt(0).toUpperCase() + key.slice(1)}/>
+                            </Form.Item>
+                        ))}
+                    </div>
                     <div className='end mt1'>
                         <Button type="primary" htmlType="submit" size='large' loading={loading}>
                             Тасдиклаш
@@ -267,6 +352,20 @@ const Products = () => {
                     setSelectedItem(null)
                 }}
             >
+                <div className='mini-cards row between align-center'>
+                    <div className='card'>
+                        <span className='title'>Фойда:</span>
+                        <span className='value green'>{ selectedItem?.profit || 0 } сум</span>
+                    </div>
+                    <div className='card'>
+                        <span className='title'>Харажати:</span>
+                        <span className='value red'>{ selectedItem?.total || 0 } сум</span>
+                    </div>
+                    <div className='card'>
+                        <span className='title'>Доллар:</span>
+                        <span className='value'>{ selectedItem?.dollar || 0 } $</span>
+                    </div>
+                </div>
                 <ul className='modal-list flex-column'>
                     {filteredKeys.map((key) => (
                         <li className='item' key={key}>
@@ -287,14 +386,3 @@ const Products = () => {
 };
 
 export default Products
-
-
-function Label({label, value}) {
-
-    return (
-        <li className='item'>
-            <span className='item__label'>{ label }</span>
-            <span className='item__value'>{ value }</span>
-        </li>
-    )
-}
