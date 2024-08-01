@@ -252,12 +252,12 @@ body {
     @include breakpoint-down(680px) {
       height: 100px;
 
-      &:nth-child(1) {
-        display: none;
-      }
-      &:nth-child(4) {
-        display: none;
-      }
+      //&:nth-child(1) {
+      //  display: none;
+      //}
+      //&:nth-child(4) {
+      //  display: none;
+      //}
     }
     @include breakpoint-down(450px) {
       &__num {

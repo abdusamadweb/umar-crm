@@ -21,7 +21,7 @@ const Products = () => {
     // fetch data
     const fetchData = async () => {
         const { data } = await $api.get('products')
-        return data?.slice(1).reverse()
+        return data?.slice(0, 1).reverse()
     }
     const { data, refetch } = useQuery(
         ['products'],
@@ -130,6 +130,8 @@ const Products = () => {
             return value.slice(0, 10)
         } else if (key.includes('Metr')) {
             return `${value} метр`
+        } else if (key.includes('Count')) {
+            return `${value} та`
         } else if (key === 'name' || key === 'material') {
             return value
         }
@@ -177,7 +179,15 @@ const Products = () => {
             className: 'fw500',
             dataIndex: 'profit',
             key: 'profit',
-            render: (_, { profit }) => <span className='green'>+{ formatPrice(profit || 0) } сум</span>,
+            render: (_, item, { profit }) => {
+                const keysToNotDisplay = ['locale', 'id', 'total', 'profit', 'date', 'price', 'dollar', 'name']
+
+                console.log(Object.keys(item).filter(key => !keysToNotDisplay.includes(key) && !key.includes('Metr') && !key.includes('Count')))
+
+                return (
+                    <span className='green'>+{formatPrice(profit || 0)} сум</span>
+                )
+            },
         },
         {
             title: 'Обший расход',
