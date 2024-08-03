@@ -1,7 +1,7 @@
 import './Products.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Select, Table} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Table} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
@@ -21,7 +21,7 @@ const Products = () => {
     // fetch data
     const fetchData = async () => {
         const { data } = await $api.get('products')
-        return data?.slice(0, 1).reverse()
+        return data?.slice(1).reverse()
     }
     const { data, refetch } = useQuery(
         ['products'],
@@ -138,6 +138,15 @@ const Products = () => {
         return value + ' $'
     }
 
+    const sumFilteredKeys = (item) => {
+        const keysToNotDisplay = ['locale', 'id', 'total', 'profit', 'date', 'price', 'dollar', 'name']
+
+        const filteredKeys = Object.keys(item)
+            .filter(key => !keysToNotDisplay.includes(key) && !key.includes('Metr') && !key.includes('Count'))
+
+        return filteredKeys.reduce((acc, key) => acc + Number(item[key]), 0)
+    }
+
     // const [firstData, setFirstData] = useState({})
     // useEffect(() => {
     //     setFirstData(selectedItem !== null ? Object.keys(selectedItem).filter(key => !keysToNotDisplayForm.includes(key)) : [])
@@ -179,22 +188,16 @@ const Products = () => {
             className: 'fw500',
             dataIndex: 'profit',
             key: 'profit',
-            render: (_, item, { profit }) => {
-                const keysToNotDisplay = ['locale', 'id', 'total', 'profit', 'date', 'price', 'dollar', 'name']
-
-                console.log(Object.keys(item).filter(key => !keysToNotDisplay.includes(key) && !key.includes('Metr') && !key.includes('Count')))
-
-                return (
-                    <span className='green'>+{formatPrice(profit || 0)} сум</span>
-                )
-            },
+            render: (_, item) =>
+                <span className='green'>-{ formatPrice((item.price - sumFilteredKeys(item)) * item.dollar || 0) } сум</span>,
         },
         {
             title: 'Обший расход',
             className: 'fw500',
             dataIndex: 'total',
             key: 'total',
-            render: (_, { total }) => <span className='red'>-{ formatPrice(total || 0) } сум</span>,
+            render: (_, item) =>
+                <span className='red'>+{ formatPrice(sumFilteredKeys(item) * item.dollar || 0) } сум</span>
         },
         {
             title: 'Курс $',
@@ -213,6 +216,8 @@ const Products = () => {
             title: 'Материал',
             dataIndex: 'material',
             key: 'material',
+            render: (_, item) =>
+                <span>{ formatPrice(item.material * item.dollar || 0) } сум</span>
         },
         {
             title: 'Амаллар',
