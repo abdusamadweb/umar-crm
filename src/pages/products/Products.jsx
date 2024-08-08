@@ -119,7 +119,7 @@ const Products = () => {
 
 
     // display data
-    const keysToNotDisplay = ['locale', 'id', 'dollar', 'total', 'profit']
+    const keysToNotDisplay = ['locale', 'id', 'dollar', 'total', 'profit', 'date']
     const keysToNotDisplayForm = ['locale', 'id', 'total', 'profit', 'date']
 
     const filteredKeys = selectedItem !== null ? Object.keys(selectedItem).filter(key => !keysToNotDisplay.includes(key)) : []
@@ -128,38 +128,32 @@ const Products = () => {
     const formatValue = (key, value) => {
         if (key === 'date') {
             return value.slice(0, 10)
+        } else if (key === 'name') {
+            return value
+        } else if (key === 'samorezCount') {
+            return `${value} кг`
         } else if (key.includes('Metr')) {
             return `${value} метр`
         } else if (key.includes('Count')) {
             return `${value} та`
-        } else if (key === 'name' || key === 'material') {
-            return value
+        } else if (key.includes('razmer') || key.includes('Visota')) {
+            return `${value} см`
         }
         return value + ' $'
     }
 
     const sumFilteredKeys = (item) => {
-        const keysToNotDisplay = ['locale', 'id', 'total', 'profit', 'date', 'price', 'dollar', 'name']
+        const keysToNotDisplay = ['locale', 'id', 'date', 'price', 'dollar', 'name', 'razmer', 'spinkaVisota', 'sidenyaVisota', 'razmerKreslo', 'tg']
+
+        if (item === null) {
+            return 0
+        }
 
         const filteredKeys = Object.keys(item)
             .filter(key => !keysToNotDisplay.includes(key) && !key.includes('Metr') && !key.includes('Count'))
 
         return filteredKeys.reduce((acc, key) => acc + Number(item[key]), 0)
     }
-
-    // const [firstData, setFirstData] = useState({})
-    // useEffect(() => {
-    //     setFirstData(selectedItem !== null ? Object.keys(selectedItem).filter(key => !keysToNotDisplayForm.includes(key)) : [])
-    // }, [first, keysToNotDisplayForm, selectedItem])
-    // console.log(firstData)
-    //
-    // const [selects, setSelects] = useState([])
-    // const [counter, setCounter] = useState(0)
-    //
-    // const addSelect = () => {
-    //     setSelects([...selects, counter])
-    //     setCounter(counter + 1)
-    // }
 
 
     // table
@@ -207,17 +201,17 @@ const Products = () => {
         },
         {
             title: 'Сана',
-            className: 'fw500',
             dataIndex: 'date',
             key: 'date',
             render: (_, { date }) => <span>{ new Date(date).toLocaleDateString() }</span>,
         },
         {
-            title: 'Материал',
-            dataIndex: 'material',
-            key: 'material',
-            render: (_, item) =>
-                <span>{ formatPrice(item.material * item.dollar || 0) } сум</span>
+            title: 'Размер',
+            className: 'fw500',
+            dataIndex: 'razmer',
+            key: 'razmer',
+            render: (_, { razmer }) =>
+                <span>{ razmer } см</span>
         },
         {
             title: 'Амаллар',
@@ -225,6 +219,9 @@ const Products = () => {
             width: '170px',
             render: (_, item) => (
                 <div className="actions">
+                    <a className='actions__btn tg' href={item.tg} target='_blank'>
+                        <i className="fa-brands fa-telegram"/>
+                    </a>
                     <button className='actions__btn view' onClick={() => {
                         setModal('show')
                         setSelectedItem(item)
@@ -257,7 +254,7 @@ const Products = () => {
 
     return (
         <div className="products page">
-            <Calculator modal={modal} setModal={setModal} />
+            <Calculator modal={modal} setModal={setModal}/>
             <div className="container">
                 <Title
                     title='Моллар - хисоб китоби'
@@ -270,61 +267,6 @@ const Products = () => {
                     />
                 </div>
             </div>
-            {/*<Modal*/}
-            {/*    className='main-modal add-edit'*/}
-            {/*    title="Кошиш"*/}
-            {/*    open={modal === 'add'}*/}
-            {/*    onCancel={() => {*/}
-            {/*        setModal('close')*/}
-            {/*        setSelectedItem(null)*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    <Form*/}
-            {/*        onFinish={onFormSubmit}*/}
-            {/*        layout='vertical'*/}
-            {/*        validateMessages={validateMessages}*/}
-            {/*        form={form}*/}
-            {/*    >*/}
-            {/*        <div className="ant-form-content">*/}
-            {/*            <Select*/}
-            {/*                showSearch*/}
-            {/*                placeholder="Танланг"*/}
-            {/*                optionFilterProp="children"*/}
-            {/*            >*/}
-            {/*                /!*{*!/*/}
-            {/*                /!*    firstData !== null ?*!/*/}
-            {/*                /!*        firstData?.map((key) => (*!/*/}
-            {/*                /!*            <Select.Option value={key} key={key}>*!/*/}
-            {/*                /!*                {key?.charAt(0).toUpperCase() + key.slice(1)}*!/*/}
-            {/*                /!*            </Select.Option>*!/*/}
-            {/*                /!*        )) : <p>Loading . . .</p>*!/*/}
-            {/*                /!*}*!/*/}
-            {/*            </Select>*/}
-            {/*            {selects?.map((selectId) => (*/}
-            {/*                <Select*/}
-            {/*                    key={selectId}*/}
-            {/*                    showSearch*/}
-            {/*                    placeholder="Танланг"*/}
-            {/*                    optionFilterProp="children"*/}
-            {/*                >*/}
-            {/*                    {firstData?.map((key) => (*/}
-            {/*                        <Select.Option value={key} key={key}>*/}
-            {/*                            {key?.charAt(0).toUpperCase() + key.slice(1)}*/}
-            {/*                        </Select.Option>*/}
-            {/*                    ))}*/}
-            {/*                </Select>*/}
-            {/*            ))}*/}
-            {/*        </div>*/}
-            {/*        <button className='add-btn' type='button' onClick={addSelect}>*/}
-            {/*            <i className="fa-solid fa-circle-plus"/>*/}
-            {/*        </button>*/}
-            {/*        <div className='end mt1'>*/}
-            {/*            <Button type="primary" htmlType="submit" size='large' loading={loading}>*/}
-            {/*                Тасдиклаш*/}
-            {/*            </Button>*/}
-            {/*        </div>*/}
-            {/*    </Form>*/}
-            {/*</Modal>*/}
             <Modal
                 className='main-modal add-edit'
                 title="Озгартириш"
@@ -367,14 +309,14 @@ const Products = () => {
                     setSelectedItem(null)
                 }}
             >
-                <div className='mini-cards row between align-center'>
+                <div className='mini-cards row align-center'>
                     <div className='card'>
                         <span className='title'>Фойда:</span>
-                        <span className='value green'>{ selectedItem?.profit || 0 } сум</span>
+                        <span className='value green'>{ formatPrice((selectedItem?.price - sumFilteredKeys(selectedItem)) * selectedItem?.dollar || 0) } сум</span>
                     </div>
                     <div className='card'>
                         <span className='title'>Харажати:</span>
-                        <span className='value red'>{ selectedItem?.total || 0 } сум</span>
+                        <span className='value red'>{ formatPrice(sumFilteredKeys(selectedItem) * selectedItem?.dollar || 0) } сум</span>
                     </div>
                     <div className='card'>
                         <span className='title'>Доллар:</span>

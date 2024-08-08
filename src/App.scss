@@ -127,6 +127,13 @@ body {
           color: #ed2b46;
         }
       }
+      &.tg {
+        i {
+          top: 2px;
+          font-size: 18px;
+          color: #1086c2;
+        }
+      }
 
       &:hover {
         opacity: 0.8;
