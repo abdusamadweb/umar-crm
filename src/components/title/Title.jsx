@@ -7,13 +7,16 @@ const Title = ({ title, btn, click, icon, additional, navigate }) => {
     const navigatee = useNavigate()
 
     if (!btn) return (
-        <div className='page-title row align-center g1'>
-            {
-                navigate && <button className='btn' onClick={() => navigatee(-1)}>
-                    <i className="fa-solid fa-arrow-left-long"/>
-                </button>
-            }
-            <h2>{title}</h2>
+        <div className='page-title row between align-center g1'>
+            <div className='row align-center g1'>
+                {
+                    navigate && <button className='btn' onClick={() => navigatee(-1)}>
+                        <i className="fa-solid fa-arrow-left-long"/>
+                    </button>
+                }
+                <h2>{title}</h2>
+            </div>
+            { additional }
         </div>
     )
 

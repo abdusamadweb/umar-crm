@@ -1,7 +1,7 @@
 import './Products.scss'
 import React, {useEffect, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Table} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import $api from "../../api/apiConfig.js";
 import {useMutation, useQuery} from "react-query";
@@ -13,6 +13,7 @@ import Tables from "../../components/tables/Tables.jsx";
 const Products = () => {
 
     const [form] = Form.useForm()
+    const [formUsd] = Form.useForm()
 
     const [modal, setModal] = useState('close')
     const [loading, setLoading] = useState(false)
@@ -22,6 +23,8 @@ const Products = () => {
 
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
+
+    const [usd, setUsd] = useState(localStorage.getItem('usd') || 12650)
 
 
     // fetch data
@@ -42,6 +45,26 @@ const Products = () => {
             refetchOnWindowFocus: false
         }
     )
+
+
+    // fetch usd
+    const fetchUsd = async () => {
+        const { data } = await $api.get('/usd')
+        return data[0]
+    }
+    const { data: dataUsd, refetch: refetchUsd } = useQuery(
+        ['usd'],
+        fetchUsd,
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false
+        }
+    )
+    useEffect(() => {
+        if (dataUsd !== undefined) {
+            setUsd(dataUsd)
+        }
+    }, [dataUsd])
 
 
     // add & edit
@@ -97,6 +120,50 @@ const Products = () => {
             form.resetFields()
         }
     }, [form, selectedItem])
+
+
+    // add money
+    const { mutate: editUsdMutate } = useMutation({
+        mutationFn: (values) => {
+            setLoading(true)
+
+            const item = {
+                ...selectedItem,
+                id: null,
+                usd: +values.usd
+            }
+            return addOrEdit('usd', item, selectedItem?.id)
+        },
+        onSuccess: async () => {
+            await refetchUsd()
+            toast.success('Озгарди!')
+
+            setModal('close')
+            setSelectedItem(null)
+            setLoading(false)
+        },
+        onError: async () => {
+            toast.error('Серверда муаммо!')
+            setLoading(false)
+        }
+    })
+
+    const editUsd = (values) => {
+        editUsdMutate(values)
+        localStorage.setItem('usd', values.usd)
+    }
+
+
+    // form
+    useEffect(() => {
+        if (selectedItem) {
+            formUsd.setFieldsValue({
+                ...selectedItem
+            })
+        } else {
+            formUsd.resetFields()
+        }
+    }, [formUsd, selectedItem])
 
 
     // display data
@@ -156,7 +223,7 @@ const Products = () => {
             className: 'fw500',
             dataIndex: 'price',
             key: 'price',
-            render: (_, { price, dollar }) => <span>{ formatPrice(price*dollar || 0) } сум</span>,
+            render: (_, { price }) => <span>{ formatPrice(price*usd?.usd || 0) } сум</span>,
         },
         {
             title: 'Фойда',
@@ -164,7 +231,7 @@ const Products = () => {
             dataIndex: 'profit',
             key: 'profit',
             render: (_, item) =>
-                <span className='green'>-{ formatPrice((item.price - sumFilteredKeys(item)) * item.dollar || 0) } сум</span>,
+                <span className='green'>+{ formatPrice((item.price - sumFilteredKeys(item)) * usd?.usd || 0) } сум</span>,
         },
         {
             title: 'Обший расход',
@@ -172,13 +239,13 @@ const Products = () => {
             dataIndex: 'total',
             key: 'total',
             render: (_, item) =>
-                <span className='red'>+{ formatPrice(sumFilteredKeys(item) * item.dollar || 0) } сум</span>
+                <span className='red'>-{ formatPrice(sumFilteredKeys(item) * usd?.usd || 0) } сум</span>
         },
         {
             title: 'Курс $',
             dataIndex: 'dollar',
             key: 'dollar',
-            render: (_, { dollar }) => <span>{ formatPrice(dollar) } сум</span>,
+            render: () => <span>{ formatPrice(usd?.usd) } сум</span>,
         },
         {
             title: 'Сана',
@@ -200,9 +267,12 @@ const Products = () => {
             width: '170px',
             render: (_, item) => (
                 <div className="actions">
-                    <a className='actions__btn tg' href={item.tg} target='_blank'>
-                        <i className="fa-brands fa-telegram"/>
-                    </a>
+                    {
+                        item.tg &&
+                        <a className='actions__btn tg' href={item.tg} target='_blank'>
+                            <i className="fa-brands fa-telegram"/>
+                        </a>
+                    }
                     <button className='actions__btn view' onClick={() => {
                         setModal('show')
                         setSelectedItem(item)
@@ -239,8 +309,19 @@ const Products = () => {
             <div className="container">
                 <Title
                     title='Моллар - хисоб китоби'
+                    additional={
+                        <Tooltip title='Долларни озгартириш'>
+                            <button className='additional-btn' onClick={() => {
+                                setModal('usd')
+                                setSelectedItem(usd)
+                            }}>
+                                <i className="fa-solid fa-dollar-sign"/>
+                            </button>
+                        </Tooltip>
+                    }
                 />
                 <div className="content">
+                    <h3 className='fw500 mb1'>Доллар: { formatPrice(usd.usd) } сум</h3>
                     <Tables
                         data={data}
                         columns={columns}
@@ -297,15 +378,15 @@ const Products = () => {
                 <div className='mini-cards row align-center'>
                     <div className='card'>
                         <span className='title'>Фойда:</span>
-                        <span className='value green'>{ formatPrice((selectedItem?.price - sumFilteredKeys(selectedItem)) * selectedItem?.dollar || 0) } сум</span>
+                        <span className='value green'>{ formatPrice(selectedItem?.price - sumFilteredKeys(selectedItem) || 0) } $</span>
                     </div>
                     <div className='card'>
                         <span className='title'>Харажати:</span>
-                        <span className='value red'>{ formatPrice(sumFilteredKeys(selectedItem) * selectedItem?.dollar || 0) } сум</span>
+                        <span className='value red'>{ formatPrice(sumFilteredKeys(selectedItem) || 0) } $</span>
                     </div>
                     <div className='card'>
                         <span className='title'>Доллар:</span>
-                        <span className='value'>{ selectedItem?.dollar || 0 } $</span>
+                        <span className='value'>{ usd?.usd || 0 } сум</span>
                     </div>
                 </div>
                 <ul className='modal-list flex-column'>
@@ -322,6 +403,32 @@ const Products = () => {
                         Озгартириш
                     </Button>
                 </div>
+            </Modal>
+            <Modal
+                className='main-modal'
+                title="Долларни озгартириш"
+                open={modal === 'usd'}
+                onCancel={() => setModal('close')}
+            >
+                <Form
+                    form={formUsd}
+                    onFinish={editUsd}
+                    layout='vertical'
+                    validateMessages={validateMessages}
+                >
+                    <Form.Item
+                        name='usd'
+                        label="Доллар"
+                        rules={[{ required: true }]}
+                    >
+                        <Input placeholder='Доллар' type='number' suffix={'сум'} />
+                    </Form.Item>
+                    <div className='end mt1'>
+                        <Button type="primary" htmlType="submit" size='large' loading={loading}>
+                            Тасдиклаш
+                        </Button>
+                    </div>
+                </Form>
             </Modal>
         </div>
     );
