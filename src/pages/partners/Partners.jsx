@@ -20,6 +20,7 @@ const Partners = () => {
     const [selectedItem, setSelectedItem] = useState(null)
 
     const [search, setSearch] = useState('')
+    const [searchFor, setSearchFor] = useState('where')
 
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
@@ -29,7 +30,7 @@ const Partners = () => {
     const fetchData = async () => {
         const eSearch = encodeURIComponent(search)
         const url = search !== ''
-            ? `partners?timestamps&where[where][like]=${eSearch}`
+            ? `partners?timestamps&where[${searchFor}][like]=${eSearch}`
             : `partners?timestamps`
 
         const { data } = await $api.get(url)

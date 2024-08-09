@@ -8,6 +8,7 @@ import {useMutation, useQuery} from "react-query";
 import {addOrEdit, deleteData} from "../../api/request.js";
 import toast from "react-hot-toast";
 import Calculator from "../../components/calculator/Calculator.jsx";
+import Tables from "../../components/tables/Tables.jsx";
 
 const Products = () => {
 
@@ -17,30 +18,25 @@ const Products = () => {
     const [loading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
 
+    const [search, setSearch] = useState('')
+
+    const [fromDate, setFromDate] = useState(new Date())
+    const [toDate, setToDate] = useState(new Date())
+
 
     // fetch data
     const fetchData = async () => {
-        const { data } = await $api.get('products')
-        return data?.slice(1).reverse()
+        const eSearch = encodeURIComponent(search)
+        const url = search !== ''
+            ? `products?where[name][like]=${eSearch}`
+            : `products`
+
+        const { data } = await $api.get(url)
+        return search !== '' ? data.reverse() : data.slice(1).reverse()
     }
     const { data, refetch } = useQuery(
-        ['products'],
+        ['products', search],
         fetchData,
-        {
-            keepPreviousData: true,
-            refetchOnWindowFocus: false
-        }
-    )
-
-
-    // fetch first data
-    const fetchData1 = async () => {
-        const { data } = await $api.get('products')
-        return data?.slice(0, 1)
-    }
-    const { data: first } = useQuery(
-        ['products1'],
-        fetchData1,
         {
             keepPreviousData: true,
             refetchOnWindowFocus: false
@@ -101,21 +97,6 @@ const Products = () => {
             form.resetFields()
         }
     }, [form, selectedItem])
-
-
-    // calculate expenses
-    const [totalExpenses, setTotalExpenses] = useState(0)
-
-    const calculateTotalExpenses = (expenses) => {
-        const total = expenses.reduce((sum, i) => sum + (i.money || 0), 0)
-        setTotalExpenses(total)
-    }
-
-    useEffect(() => {
-        if (data) {
-            calculateTotalExpenses(data)
-        }
-    }, [data])
 
 
     // display data
@@ -260,10 +241,14 @@ const Products = () => {
                     title='Моллар - хисоб китоби'
                 />
                 <div className="content">
-                    <Table
+                    <Tables
+                        data={data}
                         columns={columns}
-                        dataSource={data}
-                        scroll={{x: 550}}
+                        setSearch={setSearch}
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        setFromDate={setFromDate}
+                        setToDate={setToDate}
                     />
                 </div>
             </div>
