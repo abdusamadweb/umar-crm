@@ -9,7 +9,7 @@ const NavBar = ({ openMenu, setOpenMenu }) => {
             link: '/'
         },
         {
-            name: 'Доконлар',
+            name: 'Заказлар',
             link: '/partners'
         },
         {
