@@ -1,7 +1,7 @@
 import './Partners.scss'
 import React, {useEffect, useMemo, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Select, Switch, Table, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Select, Switch, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import {Link} from "react-router-dom";
 import $api from "../../api/apiConfig.js";
