@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import {Link, useHref} from "react-router-dom";
 import NavBar from "./NavBar.jsx";
 import {protectedRoutes} from "../../routes/route.jsx";
+import logo from "../../assets/images/logo.png";
 
 const Header = () => {
 
@@ -16,7 +17,7 @@ const Header = () => {
             <div className="container">
                 <div className="header__inner">
                     <Link className='header__logos' to='/'>
-                        <h1 className={`header__logo ${openMenu && 'opa'}`}>CRM</h1>
+                        <img className={`header__logo ${openMenu && 'opa'}`} src={logo} alt="logo"/>
                     </Link>
                     <NavBar openMenu={openMenu} setOpenMenu={setOpenMenu} />
                     <div className='burger-menu'>

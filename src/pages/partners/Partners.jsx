@@ -1,7 +1,7 @@
 import './Partners.scss'
 import React, {useEffect, useMemo, useState} from 'react';
 import Title from "../../components/title/Title.jsx";
-import {Button, Form, Input, Modal, Popconfirm, Select, Table, Tooltip} from "antd";
+import {Button, Form, Input, Modal, Popconfirm, Select, Switch, Table, Tooltip} from "antd";
 import {formatPrice, validateMessages} from "../../assets/scripts/global.js";
 import {Link} from "react-router-dom";
 import $api from "../../api/apiConfig.js";
@@ -245,12 +245,12 @@ const Partners = () => {
             key: 'material',
             render: (_, { material, materialNumber }) => <span>{ material + ' - ' + materialNumber }</span>,
         },
-        {
-            title: 'Материал нархи',
-            dataIndex: 'materialPrice',
-            key: 'materialPrice',
-            render: (_, { materialPrice }) => <span>{ formatPrice(materialPrice) } сум</span>,
-        },
+        // {
+        //     title: 'Материал нархи',
+        //     dataIndex: 'materialPrice',
+        //     key: 'materialPrice',
+        //     render: (_, { materialPrice }) => <span>{ formatPrice(materialPrice) } сум</span>,
+        // },
         {
             title: 'Материал катан олинган',
             dataIndex: 'materialWhere',
@@ -297,6 +297,7 @@ const Partners = () => {
             ),
         },
     ]
+    console.log(searchFor)
 
 
     return (
@@ -304,7 +305,7 @@ const Partners = () => {
             <div className="container">
                 <div className="partners__inner">
                     <Title
-                        title='Доконлар'
+                        title='Заказлар'
                         btn='Кошиш'
                         click={() => setModal('add')}
                         icon={true}
@@ -320,6 +321,12 @@ const Partners = () => {
                         <div className="cards">
                             <Card title='Общий сумма' value={totals.tMoney} />
                             <Card title='Моллар сони' value={totals.tMebels} txt='та' />
+                        </div>
+                        <div className="filter">
+                            <span className='fw500'><i className="fa-solid fa-filter"/> :</span>
+                            <span className='filter__txt'>Докон</span>
+                            <Switch onChange={(checked) => setSearchFor(checked ? 'mebelName' : 'where')}/>
+                            <span className='filter__txt'>Мебель</span>
                         </div>
                         <Tables
                             data={data}

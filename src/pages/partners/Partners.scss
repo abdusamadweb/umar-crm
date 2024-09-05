@@ -12,4 +12,16 @@
       grid-template-columns: 1fr;
     }
   }
+
+  .filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    &__txt {
+      font-weight: 500;
+      font-size: 15px;
+    }
+  }
 }
