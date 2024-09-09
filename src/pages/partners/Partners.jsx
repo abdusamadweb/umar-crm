@@ -22,8 +22,14 @@ const Partners = () => {
     const [search, setSearch] = useState('')
     const [searchFor, setSearchFor] = useState('where')
 
-    const [fromDate, setFromDate] = useState(new Date())
+    const [fromDate, setFromDate] = useState(() => {
+        const date = new Date()
+        return new Date(date.getFullYear(), 0)
+    })
     const [toDate, setToDate] = useState(new Date())
+
+    const fDate = new Date(fromDate?.setHours(0,0,0)).getTime()
+    const tDate = new Date(toDate?.setHours(23,59,59)).getTime()
 
 
     // fetch data
@@ -31,17 +37,17 @@ const Partners = () => {
         const eSearch = encodeURIComponent(search)
         const url = search !== ''
             ? `partners?timestamps&where[${searchFor}][like]=${eSearch}`
-            : `partners?timestamps`
+            : `partners?where[getTime][between]=${fDate},${tDate}`
 
         const { data } = await $api.get(url)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['partners', search],
+        ['partners', search, fDate, tDate],
         fetchData,
         {
             keepPreviousData: true,
-            refetchOnWindowFocus: false
+            refetchOnWindowFocus: true
         }
     )
 
@@ -70,6 +76,7 @@ const Partners = () => {
                 {
                     ...values,
                     createdAt: selectedItem ? selectedItem.createdAt : new Date(),
+                    getTime: selectedItem ? selectedItem.getTime : new Date().getTime(),
                     category: 'Ишхона'
                 },
                 selectedItem?.id || false
@@ -118,6 +125,7 @@ const Partners = () => {
                 description: `${values.mebelName} - ${values.where} сотилди. ${values.worker.name} томонидан килинган ${values.mebelName} ${new Date(values.createdAt).toLocaleString()} шу санада койилган ва ${new Date().toLocaleString()} да ${values.where} да сотилди.`,
                 money: values.money,
                 date: new Date(),
+                getTime: new Date().getTime(),
                 expense: false,
             }
             return addOrEdit('expenses', item)
@@ -143,6 +151,7 @@ const Partners = () => {
                 description: values.description,
                 createdAt: values.createdAt,
                 archivedAt: new Date(),
+                getTime: new Date().getTime(),
                 material: values.material,
                 materialNumber: values.materialNumber,
                 materialPrice: values.materialPrice,
@@ -297,7 +306,6 @@ const Partners = () => {
             ),
         },
     ]
-    console.log(searchFor)
 
 
     return (

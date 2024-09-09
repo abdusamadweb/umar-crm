@@ -22,12 +22,12 @@ const Search = ({ setSearch, fromDate, toDate, setFromDate, setToDate }) => {
                 placeholder="Кидиринг . . ."
                 onChange={handleChange}
             />
-            {/*<DateFilter*/}
-            {/*    fromDate={fromDate}*/}
-            {/*    toDate={toDate}*/}
-            {/*    setFromDate={setFromDate}*/}
-            {/*    setToDate={setToDate}*/}
-            {/*/>*/}
+            <DateFilter
+                fromDate={fromDate}
+                toDate={toDate}
+                setFromDate={setFromDate}
+                setToDate={setToDate}
+            />
         </div>
     )
 }

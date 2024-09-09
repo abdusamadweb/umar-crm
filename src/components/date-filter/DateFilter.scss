@@ -6,9 +6,10 @@
     padding: 10px;
     border-radius: 12px;
     background: #fff;
-    box-shadow: 0 5px 20px 0 #66666660;
+    box-shadow: 0 5px 10px 0 #66666660;
 
     i {
+      top: 2px;
       width: 20px;
       height: 16px;
       color: $txt-color;

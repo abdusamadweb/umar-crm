@@ -20,8 +20,14 @@ const Other = () => {
 
     const [search, setSearch] = useState('')
 
-    const [fromDate, setFromDate] = useState(new Date())
+    const [fromDate, setFromDate] = useState(() => {
+        const date = new Date()
+        return new Date(date.getFullYear(), date.getMonth(), 1)
+    })
     const [toDate, setToDate] = useState(new Date())
+
+    const fDate = new Date(fromDate?.setHours(0,0,0)).getTime()
+    const tDate = new Date(toDate?.setHours(23,59,59)).getTime()
 
 
     // fetch data
@@ -29,13 +35,13 @@ const Other = () => {
         const eSearch = encodeURIComponent(search)
         const url = search !== ''
             ? `other-expenses?timestamps&where[name][like]=${eSearch}`
-            : `other-expenses?timestamps`
+            : `other-expenses?where[getTime][between]=${fDate},${tDate}`
 
         const { data } = await $api.get(url)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['other-expenses', search],
+        ['other-expenses', search, fDate, tDate],
         fetchData,
         {
             keepPreviousData: true,
@@ -50,7 +56,11 @@ const Other = () => {
             setLoading(true)
             return addOrEdit(
                 'other-expenses',
-                { ...values, date: selectedItem ? selectedItem.date : new Date() },
+                {
+                    ...values,
+                    date: selectedItem ? selectedItem.date : new Date(),
+                    getTime: selectedItem ? selectedItem.getTime : new Date().getTime()
+                },
                 selectedItem?.id || false
             )
         },

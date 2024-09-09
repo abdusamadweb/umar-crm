@@ -23,8 +23,14 @@ const Price = () => {
 
     const [search, setSearch] = useState('')
 
-    const [fromDate, setFromDate] = useState(new Date())
+    const [fromDate, setFromDate] = useState(() => {
+        const date = new Date()
+        return new Date(date.getFullYear(), date.getMonth(), 1)
+    })
     const [toDate, setToDate] = useState(new Date())
+
+    const fDate = new Date(fromDate?.setHours(0,0,0)).getTime()
+    const tDate = new Date(toDate?.setHours(23,59,59)).getTime()
 
 
     // fetch data
@@ -32,13 +38,13 @@ const Price = () => {
         const eSearch = encodeURIComponent(search)
         const url = search !== ''
             ? `expenses?timestamps${tab !== 'Хаммаси' && `&where[category]=${tab}`}&where[name][like]=${eSearch}`
-            : `expenses?timestamps${tab !== 'Хаммаси' && `&where[category]=${tab}`}`
+            : `expenses?timestamps${tab !== 'Хаммаси' ? `&where[category]=${tab}` : `&where[getTime][between]=${fDate},${tDate}`}`
 
         const { data } = await $api.get(url)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['expenses', search, tab],
+        ['expenses', search, tab, fDate, tDate],
         fetchData,
         {
             keepPreviousData: true,
@@ -48,7 +54,7 @@ const Price = () => {
 
     // fetch other expenses
     const fetchOtherExpenses = async () => {
-        const { data } = await $api.get('other-expenses')
+        const { data } = await $api.get(`other-expenses?where[getTime][between]=${fDate},${tDate}`)
         return data.reverse()
     }
     const { data: otherExpenses } = useQuery(
@@ -65,9 +71,14 @@ const Price = () => {
     const { mutate } = useMutation({
         mutationFn: (values) => {
             setLoading(true)
+            console.log(values)
             return addOrEdit(
                 'expenses',
-                { ...values, date: selectedItem ? selectedItem.date : new Date() },
+                {
+                    ...values,
+                    date: selectedItem ? selectedItem.date : new Date(),
+                    getTime: selectedItem ? selectedItem.getTime : new Date().getTime()
+                },
                 selectedItem?.id || false
             )
         },

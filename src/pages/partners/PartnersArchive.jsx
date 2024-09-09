@@ -12,8 +12,14 @@ const PartnersArchive = () => {
 
     const [search, setSearch] = useState('')
 
-    const [fromDate, setFromDate] = useState(new Date())
+    const [fromDate, setFromDate] = useState(() => {
+        const date = new Date()
+        return new Date(date.getFullYear(), 0)
+    })
     const [toDate, setToDate] = useState(new Date())
+
+    const fDate = new Date(fromDate?.setHours(0,0,0)).getTime()
+    const tDate = new Date(toDate?.setHours(23,59,59)).getTime()
 
 
     // fetch data
@@ -21,13 +27,13 @@ const PartnersArchive = () => {
         const eSearch = encodeURIComponent(search)
         const url = search !== ''
             ? `partners-archive?timestamps&where[where][like]=${eSearch}`
-            : `partners-archive?timestamps`
+            : `partners-archive?where[getTime][between]=${fDate},${tDate}`
 
         const { data } = await $api.get(url)
         return data.reverse()
     }
     const { data, refetch } = useQuery(
-        ['partners-archive', search],
+        ['partners-archive', search, fDate, tDate],
         fetchData,
         {
             keepPreviousData: true,

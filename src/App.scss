@@ -301,8 +301,11 @@ body {
 
 // search
 .search {
-  @include mobile {
+  @include tablet {
     gap: 10px;
+  }
+
+  @include mobile {
 
     input {
       font-size: 14px;
