@@ -100,18 +100,19 @@ const PartnersArchive = () => {
             title: 'Материал',
             dataIndex: 'material',
             key: 'material',
-            render: (_, { material, materialNumber }) => <span>{ material + ' - ' + materialNumber }</span>,
+            render: (_, { material }) => <span>{ material || '_' }</span>,
         },
-        {
-            title: 'Материал нархи',
-            dataIndex: 'materialPrice',
-            key: 'materialPrice',
-            render: (_, { materialPrice }) => <span>{ formatPrice(materialPrice) } сум</span>,
-        },
+        // {
+        //     title: 'Материал нархи',
+        //     dataIndex: 'materialPrice',
+        //     key: 'materialPrice',
+        //     render: (_, { materialPrice }) => <span>{ formatPrice(materialPrice) } сум</span>,
+        // },
         {
             title: 'Материал катан олинган',
             dataIndex: 'materialWhere',
             key: 'materialWhere',
+            render: (_, { materialWhere }) => <span>{ materialWhere || '_' }</span>,
         },
         {
             title: 'Амаллар',

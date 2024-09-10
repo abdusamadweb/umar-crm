@@ -85,6 +85,7 @@ const Xarajatlar = () => {
                 category: 'Ишхона',
                 money: +values.money,
                 date: new Date(),
+                getTime: new Date().getTime(),
                 expense: true,
             }
             return addOrEdit('expenses', item)

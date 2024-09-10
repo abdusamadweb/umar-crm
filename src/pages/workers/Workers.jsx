@@ -146,6 +146,7 @@ const Workers = () => {
                 category: 'Ходимлар',
                 money: +values.debt,
                 date: new Date(),
+                getTime: new Date().getTime(),
                 expense: true,
             }
             return addOrEdit('expenses', item)

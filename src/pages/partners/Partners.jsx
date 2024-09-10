@@ -236,12 +236,6 @@ const Partners = () => {
             render: (_, { money }) => <span>{ money ? `${formatPrice(money)} сум` : 'ишбай' }</span>,
         },
         {
-            title: 'Описание',
-            dataIndex: 'description',
-            key: 'description',
-            render: (_, { description }) => <span>{ description }</span>,
-        },
-        {
             className: 'fw500',
             title: 'Койилган санаси',
             dataIndex: 'createdAt',
@@ -249,10 +243,16 @@ const Partners = () => {
             render: (_, { createdAt }) => <span>{ new Date(createdAt).toLocaleString() }</span>,
         },
         {
+            title: 'Описание',
+            dataIndex: 'description',
+            key: 'description',
+            render: (_, { description }) => <span>{ description || '_' }</span>,
+        },
+        {
             title: 'Материал',
             dataIndex: 'material',
             key: 'material',
-            render: (_, { material, materialNumber }) => <span>{ material + ' - ' + materialNumber }</span>,
+            render: (_, { material }) => <span>{ material || '_' }</span>,
         },
         // {
         //     title: 'Материал нархи',
@@ -261,9 +261,10 @@ const Partners = () => {
         //     render: (_, { materialPrice }) => <span>{ formatPrice(materialPrice) } сум</span>,
         // },
         {
-            title: 'Материал катан олинган',
+            title: 'Материал олинган жой',
             dataIndex: 'materialWhere',
             key: 'materialWhere',
+            render: (_, { materialWhere }) => <span>{ materialWhere || '_' }</span>,
         },
         {
             title: 'Амаллар',
@@ -371,19 +372,6 @@ const Partners = () => {
                         <Input placeholder='Докон'/>
                     </Form.Item>
                     <Form.Item
-                        name='worker'
-                        label="Ходим"
-                        rules={[{required: true}]}
-                    >
-                        <Select size="large" placeholder="Танланг">
-                            {workers?.map(i => (
-                                <Select.Option key={i?.id} value={i?.id}>
-                                    {i?.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
                         name='mebelName'
                         label="Мебел номи"
                         rules={[{required: true}]}
@@ -395,7 +383,20 @@ const Partners = () => {
                         label="Нархи"
                         rules={[{required: true}]}
                     >
-                        <Input placeholder='Иш хаки' type='number'/>
+                        <Input placeholder='Нархи' type='number'/>
+                    </Form.Item>
+                    <Form.Item
+                        name='worker'
+                        label="Ходим"
+                        rules={[{required: true}]}
+                    >
+                        <Select size="large" placeholder="Танланг">
+                            {workers?.map(i => (
+                                <Select.Option key={i?.id} value={i?.id}>
+                                    {i?.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         name='description'
@@ -411,18 +412,18 @@ const Partners = () => {
                         >
                             <Input placeholder='Материал номи'/>
                         </Form.Item>
-                        <Form.Item
-                            name='materialNumber'
-                            label="Материал номери"
-                        >
-                            <Input placeholder='Материал номери' type='number'/>
-                        </Form.Item>
-                        <Form.Item
-                            name='materialPrice'
-                            label="Материал нархи"
-                        >
-                            <Input placeholder='Материал нархи' type='number'/>
-                        </Form.Item>
+                        {/*<Form.Item*/}
+                        {/*    name='materialNumber'*/}
+                        {/*    label="Материал номери"*/}
+                        {/*>*/}
+                        {/*    <Input placeholder='Материал номери' type='number'/>*/}
+                        {/*</Form.Item>*/}
+                        {/*<Form.Item*/}
+                        {/*    name='materialPrice'*/}
+                        {/*    label="Материал нархи"*/}
+                        {/*>*/}
+                        {/*    <Input placeholder='Материал нархи' type='number'/>*/}
+                        {/*</Form.Item>*/}
                         <Form.Item
                             name='materialWhere'
                             label="Материал каердан олинганлиги"
