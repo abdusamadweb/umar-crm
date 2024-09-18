@@ -20,9 +20,6 @@ const Xarajatlar = () => {
 
     const [search, setSearch] = useState('')
 
-    const [fromDate, setFromDate] = useState(new Date())
-    const [toDate, setToDate] = useState(new Date())
-
     const [tab, setTab] = useState(localStorage.getItem('xarajatlar') || 'Абшивка')
 
 
@@ -234,10 +231,7 @@ const Xarajatlar = () => {
                             data={data}
                             columns={columns}
                             setSearch={setSearch}
-                            fromDate={fromDate}
-                            toDate={toDate}
-                            setFromDate={setFromDate}
-                            setToDate={setToDate}
+                            fromDate={false}
                         />
                     </div>
                 </div>

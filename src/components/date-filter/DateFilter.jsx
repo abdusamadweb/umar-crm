@@ -20,11 +20,11 @@ const DateFilter = ({ fromDate, toDate, setFromDate, setToDate }) => {
                     <div className="row no-wrap">
                         <div className='calendar__content'>
                             <span className='txt'>. . . дан</span>
-                            <Calendar onChange={setFromDate}/>
+                            <Calendar onChange={setFromDate} defaultValue={fromDate}/>
                         </div>
                         <div className='calendar__content'>
                             <span className='txt'>. . . гача</span>
-                            <Calendar onChange={setToDate}/>
+                            <Calendar onChange={setToDate} defaultValue={toDate} />
                         </div>
                     </div>
                     <div className="bg" onClick={() => setCalendar(false)}/>

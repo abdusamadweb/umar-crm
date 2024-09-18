@@ -179,6 +179,13 @@ const Price = () => {
         }
     }, [search])
 
+    useEffect(() => {
+        setFromDate(() => {
+            const date = new Date()
+            return new Date(date.getFullYear(), date.getMonth(), 1)
+        })
+    }, [tab])
+
 
     // form
     useEffect(() => {
