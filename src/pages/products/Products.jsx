@@ -180,6 +180,8 @@ const Products = () => {
             return value
         } else if (key === 'samorezCount') {
             return `${value} кг`
+        } else if (key === 'tg') {
+            return <a target='_blank' href={value}>{value}</a>
         } else if (key.includes('Metr')) {
             return `${value} метр`
         } else if (key.includes('Count')) {

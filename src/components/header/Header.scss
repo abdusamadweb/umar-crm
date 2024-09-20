@@ -7,7 +7,7 @@
   width: 250px;
   height: 100vh;
   display: none;
-  padding: 30px 0;
+  padding-block: 30px 1rem;
   border-radius: 0 20px 20px 0;
   border: 1px solid #eff0f6;
   background: #fff;
@@ -16,6 +16,14 @@
 
   &.open {
     width: 250px;
+  }
+
+  @media only screen and (max-height: 600px) {
+    overflow-y: scroll;
+
+    &__usd {
+      padding-bottom: 12px;
+    }
   }
 
   @include tablet {
@@ -153,6 +161,15 @@
         font-size: 14px;
         transition: transform 0.5s ease;
       }
+    }
+  }
+
+  &__usd {
+    margin-top: 2rem;
+
+    .usd {
+      margin-left: 5px;
+      color: $main-color;
     }
   }
 
