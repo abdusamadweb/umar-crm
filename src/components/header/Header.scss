@@ -171,6 +171,10 @@
       margin-left: 5px;
       color: $main-color;
     }
+
+    @include tablet {
+      visibility: hidden;
+    }
   }
 
   .close {

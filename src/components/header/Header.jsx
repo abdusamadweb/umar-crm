@@ -44,7 +44,7 @@ const Header = () => {
                         </button>
                     </div>
                 </div>
-                <div className='header__usd fz181111'>
+                <div className={`header__usd ${openMenu ? 'open' : ''} fz18`}>
                     <span className='fw600'>$ USD -</span>
                     <span className='fw600 usd'>{ formatPrice(usd) } сум</span>
                 </div>
