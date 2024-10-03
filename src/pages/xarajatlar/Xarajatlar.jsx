@@ -27,8 +27,8 @@ const Xarajatlar = () => {
     const fetchData = async () => {
         const eSearch = encodeURIComponent(search)
         const url = search !== ''
-            ? `xarajatlar?timestamps${tab !== 'Хаммаси' && `&where[category]=${tab}`}&where[name][like]=${eSearch}`
-            : `xarajatlar?timestamps${tab !== 'Хаммаси' && `&where[category]=${tab}`}`
+            ? `xarajatlar?timestamps${tab !== 'Хаммаси' ? `&where[category]=${tab}` : ''}&where[name][like]=${eSearch}`
+            : `xarajatlar?timestamps${tab !== 'Хаммаси' ? `&where[category]=${tab}` : ''}`
 
         const { data } = await $api.get(url)
         return data.reverse()
@@ -162,7 +162,7 @@ const Xarajatlar = () => {
             title: 'Охирги марта',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (_, { created_at }) => <span>{ created_at || '__' }</span>,
+            render: (_, { updated_at }) => <span>{ updated_at || '__' }</span>,
         },
         {
             title: 'Амаллар',
